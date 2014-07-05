@@ -75,6 +75,8 @@ import urlparse
 
 browser = spynner.Browser(debug_level = spynner.ERROR)
 browser.set_html_parser(pyquery.PyQuery)
+
+history = []
         
 def get_browser():
     return browser
@@ -123,6 +125,7 @@ def go(url):
             break
 
     if success:
+        history.append(browser.url)
         print>>OUT, '==> at', browser.url
     else:
         raise TwillException("cannot go to '%s'" % (url,))
@@ -260,7 +263,14 @@ def back():
     
     Return to the previous page.
     """
-    raise TwillAssertionError("Not yet implemented")
+    if history:
+        history.pop()
+        last_page = history[-1]
+        browser.load(last_page)
+        print>>OUT, '==> back to', browser.url
+    else:
+        browser.load('')
+        print>>OUT, '==> back at empty page.'
 
 def show():
     """
@@ -379,7 +389,15 @@ def showhistory():
 
     Show the browser history (what URLs were visited).
     """
-    raise TwillAssertionError("Not yet implemented")
+    print>>OUT, ''
+    print>>OUT, 'History: (%d pages total) ' % (len(history))
+
+    for n, page in enumerate(history):
+        print>>OUT, "\t%d. %s" % (n + 1, page)
+
+    print>>OUT, ''
+
+    return history
     
 def formclear(formname):
     """
