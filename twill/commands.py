@@ -482,7 +482,7 @@ def clear_cookies():
 
     Clear the cookie jar.
     """
-    raise TwillAssertionError("Not yet implemented")
+    browser.set_cookies('')
 
 def show_cookies():
     """
