@@ -490,7 +490,19 @@ def show_cookies():
 
     Show all of the cookies in the cookie jar.
     """
-    raise TwillAssertionError("Not yet implemented")
+    # Cookies stored in Mozilla format
+    cookies = browser.get_cookies().split("\n")[2:]
+
+    print>>OUT, 'There are %d cookie(s) in the cookiejar.\n' % (len(cookies))
+
+    if len(cookies):
+        for cookie in cookies:
+            cookie = cookie.split("\t")
+            print>>OUT, "\t<Cookie %s=%s for %s/>" % (cookie[5], cookie[6],
+                                                      cookie[0])
+
+        print>>OUT, ''
+    
 
 def add_auth(realm, uri, user, passwd):
     """
