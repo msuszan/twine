@@ -77,6 +77,7 @@ browser = spynner.Browser(debug_level = spynner.ERROR)
 browser.set_html_parser(pyquery.PyQuery)
 
 history = []
+headers = [("Accept", "text/html; */*")]
         
 def get_browser():
     return browser
@@ -120,7 +121,7 @@ def go(url):
     
     success = False
     for u in try_urls:
-        if browser.load(u):
+        if browser.load(u, headers = headers):
             success = True
             break
 
@@ -138,7 +139,7 @@ def reload():
     
     Reload the current URL.
     """
-    browser.load(browser.url)
+    browser.load(browser.url, headers = headers)
     print>>OUT, '==> reloaded'
 
 def code(should_be):
@@ -147,7 +148,8 @@ def code(should_be):
     
     Check to make sure the response code for the last page is as given.
     """
-    raise TwillAssertionError("Not yet implemented")
+    #raise TwillAssertionError("Not yet implemented")
+    print headers
 
 def tidy_ok():
     """
@@ -266,10 +268,10 @@ def back():
     if history:
         history.pop()
         last_page = history[-1]
-        browser.load(last_page)
+        browser.load(last_page, headers = headers)
         print>>OUT, '==> back to', browser.url
     else:
-        browser.load('')
+        browser.load('', headers = headers)
         print>>OUT, '==> back at empty page.'
 
 def show():
@@ -564,7 +566,8 @@ def setglobal(name, value):
 
     Sets the variable <name> to the value <value> in the global namespace.
     """
-    raise TwillAssertionError("Not yet implemented")
+    global_dict, local_dict = get_twill_glocals()
+    global_dict[name] = value
 
 def setlocal(name, value):
     """
@@ -572,7 +575,8 @@ def setlocal(name, value):
 
     Sets the variable <name> to the value <value> in the local namespace.
     """
-    raise TwillAssertionError("Not yet implemented")
+    global_dict, local_dict = get_twill_glocals()
+    local_dict[name] = value
 
 def title(what):
     """
@@ -611,7 +615,9 @@ def redirect_error(filename):
 
     Append all twill error output to the given file.
     """
-    raise TwillAssertionError("Not yet implemented")
+    import twill
+    fp = open(filename, 'a')
+    twill.set_output(fp)
 
 def reset_error():
     """
@@ -619,7 +625,8 @@ def reset_error():
     
     Reset twill error output to go to the screen.
     """
-    raise TwillAssertionError("Not yet implemented")
+    import twill
+    twill.set_output(None)
 
 def add_extra_header(header_key, header_value):
     """
@@ -628,7 +635,7 @@ def add_extra_header(header_key, header_value):
     Add an HTTP header to each HTTP request.  See 'show_extra_headers' and
     'clear_extra_headers'.
     """
-    raise TwillAssertionError("Not yet implemented")
+    headers.append((header_key, header_value))
 
 def show_extra_headers():
     """
@@ -636,7 +643,15 @@ def show_extra_headers():
 
     Show any extra headers being added to each HTTP request.
     """
-    raise TwillAssertionError("Not yet implemented")
+    if headers:
+        print 'The following HTTP headers are added to each request:'
+    
+        for k, v in headers:
+            print '  "%s" = "%s"' % (k, v,)
+            
+        print ''
+    else:
+        print '** no extra HTTP headers **'
 
 def clear_extra_headers():
     """
@@ -645,7 +660,8 @@ def clear_extra_headers():
     Remove all user-defined HTTP headers.  See 'add_extra_header' and
     'show_extra_headers'.
     """
-    raise TwillAssertionError("Not yet implemented")
+    global headers
+    headers = [("Accept", "text/html; */*")]
 
 def config(key=None, value=None):
     """
