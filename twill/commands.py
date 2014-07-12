@@ -69,11 +69,12 @@ import utils
 from utils import set_form_control_value, run_tidy
 from namespaces import get_twill_glocals
 
+from browser import TwillBrowser
 import spynner
 import pyquery
 import urlparse
 
-browser = spynner.Browser(debug_level = spynner.ERROR)
+browser = TwillBrowser(debug_level = spynner.ERROR)
 browser.set_html_parser(pyquery.PyQuery)
 
 history = []
@@ -90,7 +91,7 @@ def reset_browser():
     """
     global browser
 
-    browser = spynner.Browser(debug_level = spynner.ERROR)
+    browser = TwillBrowser(debug_level = spynner.ERROR)
     browser.set_html_parser(pyquery.PyQuery)
 
 def exit(code = "0"):
@@ -121,7 +122,7 @@ def go(url):
     
     success = False
     for u in try_urls:
-        if browser.load(u, headers = headers):
+        if browser.load(u, headers):
             success = True
             break
 
@@ -139,7 +140,7 @@ def reload():
     
     Reload the current URL.
     """
-    browser.load(browser.url, headers = headers)
+    browser.load(browser.url, headers)
     print>>OUT, '==> reloaded'
 
 def code(should_be):
@@ -148,8 +149,10 @@ def code(should_be):
     
     Check to make sure the response code for the last page is as given.
     """
-    #raise TwillAssertionError("Not yet implemented")
-    print headers
+    actual = browser.get_http_status()
+    if actual != should_be:
+        raise TwillAssertionError("code is %s != %s" % (actual,
+                                                        should_be))
 
 def tidy_ok():
     """
@@ -268,10 +271,10 @@ def back():
     if history:
         history.pop()
         last_page = history[-1]
-        browser.load(last_page, headers = headers)
+        browser.load(last_page, headers)
         print>>OUT, '==> back to', browser.url
     else:
-        browser.load('', headers = headers)
+        browser.load('', headers)
         print>>OUT, '==> back at empty page.'
 
 def show():
