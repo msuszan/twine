@@ -105,23 +105,7 @@ def go(url):
     
     Visit the URL given.
     """
-    try_urls = [url, ]
-
-    # if this is an absolute URL that is just missing the 'http://' at
-    # the beginning, try fixing that.
-    if url.find('://') == -1:
-        full_url = 'http://%s' % (url,)  # mimic browser behavior
-        try_urls.append(full_url)
-
-    # if this is a '?' or '/' URL, then assume that we want to tack it onto
-    # the end of the current URL.
-    try_urls.append(urlparse.urljoin(browser.url, url))
-    
-    success = False
-    for u in try_urls:
-        if browser.load(u):
-            success = True
-            break
+    success = browser.go(url)
 
     if success:
         print>>OUT, '==> at', browser.url
@@ -199,7 +183,23 @@ def follow(what):
     
     Find the first matching link on the page & visit it.
     """
-    raise TwillAssertionError("Not yet implemented")
+    regexp = re.compile(what)
+    links = [
+             (l.text or '', l.get("href"))
+             for l in browser.soup("a")
+            ]
+    found_link = ''
+    for link in links:
+        if re.search(regexp, link[0]) or re.search(regexp, link[1]):
+            found_link = link[1]
+            break
+
+    if found_link != '':
+        browser.go(found_link)
+        print>>OUT, '==> at', browser.url
+        return browser.url
+
+    raise TwillAssertionError("no links match to '%s'" % (what,))
 
 def _parseFindFlags(flags):
     KNOWN_FLAGS = {

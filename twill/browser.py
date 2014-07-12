@@ -19,6 +19,24 @@ class TwillBrowser(Browser):
 
         return ret
 
+    def go(self, url):
+        try_urls = [url, ]
+
+        # if this is an absolute URL that is just missing the 'http://' at
+        # the beginning, try fixing that.
+        if url.find('://') == -1:
+            full_url = 'http://%s' % (url,)  # mimic browser behavior
+            try_urls.append(full_url)
+
+        # if this is a '?' or '/' URL, then assume that we want to tack it
+        # onto the end of the current URL.
+        try_urls.append(urlparse.urljoin(self.url, url))
+        
+        for u in try_urls:
+            if self.load(u):
+                return True
+        return False
+
     def _on_reply(self, reply):
         super(TwillBrowser, self)._on_reply(reply)
 
