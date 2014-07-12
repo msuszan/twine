@@ -76,8 +76,6 @@ import urlparse
 
 browser = TwillBrowser(debug_level = spynner.ERROR)
 browser.set_html_parser(pyquery.PyQuery)
-
-headers = [("Accept", "text/html; */*")]
         
 def get_browser():
     return browser
@@ -634,7 +632,7 @@ def add_extra_header(header_key, header_value):
     Add an HTTP header to each HTTP request.  See 'show_extra_headers' and
     'clear_extra_headers'.
     """
-    headers.append((header_key, header_value))
+    browser.add_header((header_key, header_value))
 
 def show_extra_headers():
     """
@@ -642,6 +640,7 @@ def show_extra_headers():
 
     Show any extra headers being added to each HTTP request.
     """
+    headers = browser.get_headers()
     if headers:
         print 'The following HTTP headers are added to each request:'
     
@@ -659,8 +658,7 @@ def clear_extra_headers():
     Remove all user-defined HTTP headers.  See 'add_extra_header' and
     'show_extra_headers'.
     """
-    global headers
-    headers = [("Accept", "text/html; */*")]
+    browser.reset_headers()
 
 def config(key=None, value=None):
     """

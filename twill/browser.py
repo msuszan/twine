@@ -5,19 +5,17 @@ class TwillBrowser(Browser):
         super(TwillBrowser, self).__init__(debug_level)
         self.http_status = ""
         self.history = []
-        self.request_headers = [("Accept", "text/html; */*")]
+        self.headers = [("Accept", "text/html; */*")]
 
     def load(self, url):
         self.http_status = ""
         old_url = self.url
 
         ret = super(TwillBrowser, self).load(url,
-                            headers = self.request_headers)
+                            headers = self.headers)
 
         if ret:
             self.history.append(self.url)
-
-        print self.history
 
         return ret
 
@@ -44,8 +42,17 @@ class TwillBrowser(Browser):
         if self.history:
             last_page = self.history[-1]
             return super(TwillBrowser, self).load(last_page,
-                            headers = self.request_headers)
+                            headers = self.headers)
         else:
             super(TwillBrowser, self).load("",
-                            headers = self.request_headers)
+                            headers = self.headers)
             return False
+
+    def add_header(self, header):
+        self.headers.append(header)
+
+    def get_headers(self):
+        return self.headers
+
+    def reset_headers(self):
+        self.headers = [("Accept", "text/html; */*")]
