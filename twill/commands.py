@@ -77,7 +77,6 @@ import urlparse
 browser = TwillBrowser(debug_level = spynner.ERROR)
 browser.set_html_parser(pyquery.PyQuery)
 
-history = []
 headers = [("Accept", "text/html; */*")]
         
 def get_browser():
@@ -122,12 +121,11 @@ def go(url):
     
     success = False
     for u in try_urls:
-        if browser.load(u, headers):
+        if browser.load(u):
             success = True
             break
 
     if success:
-        history.append(browser.url)
         print>>OUT, '==> at', browser.url
     else:
         raise TwillException("cannot go to '%s'" % (url,))
@@ -140,7 +138,7 @@ def reload():
     
     Reload the current URL.
     """
-    browser.load(browser.url, headers)
+    browser.load(browser.url)
     print>>OUT, '==> reloaded'
 
 def code(should_be):
@@ -268,13 +266,9 @@ def back():
     
     Return to the previous page.
     """
-    if history:
-        history.pop()
-        last_page = history[-1]
-        browser.load(last_page, headers)
+    if browser.back():
         print>>OUT, '==> back to', browser.url
     else:
-        browser.load('', headers)
         print>>OUT, '==> back at empty page.'
 
 def show():
@@ -394,6 +388,8 @@ def showhistory():
 
     Show the browser history (what URLs were visited).
     """
+    history = browser.get_history()
+
     print>>OUT, ''
     print>>OUT, 'History: (%d pages total) ' % (len(history))
 
