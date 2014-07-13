@@ -129,7 +129,7 @@ def code(should_be):
     
     Check to make sure the response code for the last page is as given.
     """
-    actual = browser.get_http_status()
+    actual = browser.get_http_status() or "None"
     if actual != should_be:
         raise TwillAssertionError("code is %s != %s" % (actual,
                                                         should_be))
