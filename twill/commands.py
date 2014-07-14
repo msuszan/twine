@@ -120,7 +120,7 @@ def reload():
     
     Reload the current URL.
     """
-    browser.load(browser.url)
+    browser.load(browser.url, False)
     print>>OUT, '==> reloaded'
 
 def code(should_be):
@@ -129,7 +129,7 @@ def code(should_be):
     
     Check to make sure the response code for the last page is as given.
     """
-    actual = browser.get_http_status() or "None"
+    actual = browser.http_status or "None"
     if actual != should_be:
         raise TwillAssertionError("code is %s != %s" % (actual,
                                                         should_be))
@@ -386,7 +386,7 @@ def showhistory():
 
     Show the browser history (what URLs were visited).
     """
-    history = browser.get_history()
+    history = browser.history
 
     print>>OUT, ''
     print>>OUT, 'History: (%d pages total) ' % (len(history))
@@ -640,7 +640,7 @@ def show_extra_headers():
 
     Show any extra headers being added to each HTTP request.
     """
-    headers = browser.get_headers()
+    headers = browser.headers
     if headers:
         print 'The following HTTP headers are added to each request:'
     
