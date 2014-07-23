@@ -6,6 +6,17 @@ class TwillBrowser(Browser):
         self.headers = [("Accept", "text/html; */*")]
         self._http_status = ""
         self._history = []
+
+        # Dictionary of dictionaries
+        # Indexed first by url, and then by realm
+        self._realmCredentials = {}
+
+        # Dictionary indexed by url only
+        # Used when a realm is not specified
+        self._urlCredentials = {}
+
+        self.set_http_authentication_callback(self.http_authentication_callback)
+
         self.at_empty_page = True
 
     @property
@@ -35,6 +46,21 @@ class TwillBrowser(Browser):
 
     def reset_headers(self):
         self.headers = [("Accept", "text/html; */*")]
+
+    def add_credentials(self, realm, url, username, password):
+        if realm:
+            if url not in self._realmCredentials:
+                self._realmCredentials[url] = {}
+            self._realmCredentials[url][realm] = (username, password)
+        else:
+            self._urlCredentials[url] = (username, password)
+
+    def http_authentication_callback(self, url, realm):
+        realm_auth = self._realmCredentials.get(url)
+        if realm_auth:
+            realm_auth = realm_auth.get(realm)
+        url_auth = self._urlCredentials.get(url)
+        return realm_auth or url_auth
 
     def load(self, url, add_to_history = True):
         if url:
@@ -78,6 +104,8 @@ class TwillBrowser(Browser):
 
     def _on_reply(self, reply):
         super(TwillBrowser, self)._on_reply(reply)
+
+        print self._reply_url
 
         try:
             http_status = "%s" % toString(

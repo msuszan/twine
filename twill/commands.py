@@ -527,9 +527,8 @@ def add_auth(realm, uri, user, passwd):
 
     Add HTTP Basic Authentication information for the given realm/uri.
 
-    Note: realms are not currently supported; <realm> is ignored.
     """
-    raise TwillAssertionError("Not yet implemented")
+    browser.add_credentials(realm, uri, user, passwd)
 
 def debug(what, level):
     """
