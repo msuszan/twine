@@ -362,13 +362,63 @@ def submit(submit_button=None):
     """
     raise TwillAssertionError("Not yet implemented")
 
+def _trunc(s, length):
+    """
+    Truncate a string s to length length, by cutting off the last 
+    (length-4) characters and replacing them with ' ...'
+    """
+    if not s:
+        return ''
+    
+    if len(s) > length:
+        return s[:length - 4] + ' ...'
+    
+    return s
+
 def showforms():
     """
     >> showforms
     
     Show all of the forms on the current page.
     """
-    raise TwillAssertionError("Not yet implemented")
+    for i, form in enumerate(browser.soup("form").items()):
+        if form.attr("name"):
+            print>>OUT, "Form name=%s (#%d)" % (form.attr("name"), i + 1,)
+        else:
+            print>>OUT, "Form #%d" % (i + 1,)
+
+        # Form fields(input and select)
+        fields = [ i for i in form.find("input").items() ]
+        fields.extend([ s for s in form.find("select").items() ])
+
+        if fields:
+            print>>OUT, "## ## __Name__________________ __Type___ __ID________ __Value__________________"
+
+            for j, field in enumerate(fields):
+                # Print form number
+                print>>OUT, ("%-5s" % (j + 1,)),
+
+                # Print form name
+                print>>OUT, ("%-23s " % (_trunc(field.attr("name"), 23),)),
+
+                # Print form type
+                if field.attr("type"):
+                    print>>OUT, ("%-9s" % (_trunc(field.attr("type"), 9))),
+                else:
+                    print>>OUT, ("%-9s" % "select"),
+
+                # Print form ID
+                print>>OUT, ("%-12s" % (_trunc(field.attr("id") or "(None)", 12),)),
+
+                options = field.find("option").items()
+                names = [ o.attr("name") or o.text() for o in field.find("option").items() ]
+                values = [ o.attr("value") for o in field.find("option").items() ]
+
+                # Print form value, or options
+                if names:
+                    print>>OUT, _trunc("%s of %s" % (values, names,), 40)
+                else:
+                    print>>OUT, _trunc(field.attr("value"), 40)
 
 def showlinks():
     """
