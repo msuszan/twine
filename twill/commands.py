@@ -709,6 +709,66 @@ def clear_extra_headers():
     """
     browser.reset_headers()
 
+def _make_boolean(value):
+    """
+    Convert the input value into a boolean like so:
+    
+    >> make_boolean('true')
+    True
+    >> make_boolean('false')
+    False
+    >> make_boolean('1')
+    True
+    >> make_boolean('0')
+    False
+    >> make_boolean('+')
+    True
+    >> make_boolean('-')
+    False
+    """
+    value = str(value)
+    value = value.lower().strip()
+
+    # true/false
+    if value in ('true', 'false'):
+        if value == 'true':
+            return True
+        return False
+
+    # 0/nonzero
+    try:
+        ival = int(value)
+        return bool(ival)
+    except ValueError:
+        pass
+
+    # +/-
+    if value in ('+', '-'):
+        if value == '+':
+            return True
+        return False
+
+    # on/off
+    if value in ('on', 'off'):
+        if value == 'on':
+            return True
+        return False
+
+    raise TwillException("unable to convert '%s' into true/false" % (value,))
+
+_orig_options = dict(readonly_controls_writeable=False,
+                     use_tidy=True,
+                     require_tidy=False,
+                     use_BeautifulSoup=True,
+                     require_BeautifulSoup=False,
+                     allow_parse_errors=True,
+                     with_default_realm=False,
+                     acknowledge_equiv_refresh=True
+                     )
+
+_options = {}
+_options.update(_orig_options)
+
 def config(key=None, value=None):
     """
     >> config [<key> [<int value>]]
@@ -728,7 +788,27 @@ def config(key=None, value=None):
     Deprecated:
      * 'allow_parse_errors' has been removed.
     """
-    raise TwillAssertionError("Not yet implemented")
+    if key is None:
+        keys = _options.keys()
+        keys.sort()
+
+        print>>OUT, 'current configuration:'
+        for k in keys:
+            print>>OUT, '\t%s : %s' % (k, _options[k])
+        print>>OUT, ''
+    else:
+        v = _options.get(key)
+        if v is None:
+            print>>OUT, '*** no such configuration key', key
+            print>>OUT, 'valid keys are:', ";".join(_options.keys())
+            raise TwillException('no such configuration key: %s' % (key,))
+        elif value is None:
+            print>>OUT, ''
+            print>>OUT, 'key %s: value %s' % (key, v)
+            print>>OUT, ''
+        else:
+            value = _make_boolean(value)
+            _options[key] = value
 
 def info():
     """
