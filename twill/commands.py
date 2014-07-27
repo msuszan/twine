@@ -59,7 +59,8 @@ __all__ = ['get_browser',
            'add_extra_header',
            'show_extra_headers',
            'clear_extra_headers',
-           'info'
+           'info',
+           'browse'
            ]
 
 import re, getpass, time
@@ -817,3 +818,12 @@ def info():
     Report information on current page.
     """
     raise TwillAssertionError("Not yet implemented")
+
+def browse():
+    """
+    >> browse
+
+    Allows the user to browse the current page. Returns when the window
+    is closed.
+    """
+    browser.browse()
