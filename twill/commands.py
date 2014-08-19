@@ -31,9 +31,9 @@ __all__ = ['get_browser',
            'showhistory',
            'submit',
            'formvalue',
-           #'fv',
+           'fv',
            'formaction',
-           #'fa',
+           'fa',
            'formclear',
            'formfile',
            'getinput',
@@ -75,8 +75,9 @@ import spynner
 import pyquery
 import urlparse
 
-browser = TwillBrowser(debug_level = spynner.ERROR)
+browser = TwillBrowser(debug_level = spynner.DEBUG)
 browser.set_html_parser(pyquery.PyQuery)
+browser.load_jquery(True)
         
 def get_browser():
     return browser
@@ -91,6 +92,7 @@ def reset_browser():
 
     browser = TwillBrowser(debug_level = spynner.ERROR)
     browser.set_html_parser(pyquery.PyQuery)
+    browser.load_jquery(True)
 
 def exit(code = "0"):
     """
@@ -457,8 +459,6 @@ def formclear(formname):
     """
     raise TwillAssertionError("Not yet implemented")
 
-#fv = formvalue
-
 def formvalue(formname, fieldname, value):
     """
     >> formvalue <formname> <field> <value>
@@ -485,9 +485,53 @@ def formvalue(formname, fieldname, value):
 
     'formvalue' is available as 'fv' as well.
     """
-    raise TwillAssertionError("Not yet implemented")
+    try:
+        formname = int(formname)
+        formname -= 1
 
-#fa = formaction
+        all_forms = [ i for i in browser.soup("form").items() ]
+
+        if len(all_forms) > formname:
+            form = all_forms[formname]
+        else:
+            raise TwillAssertionError("no matching forms!")
+
+    except ValueError:
+        forms = [ i for i in browser.soup("form[name='%s']" % formname).items() ]
+
+        if len(forms) > 1:
+            raise TwillAssertionError("multiple form matches")
+        
+        if forms:
+            form = forms[0]
+        else:
+            raise TwillAssertionError("no matching forms!")
+
+    try:
+        fieldname = int(fieldname)
+        fieldname -= 1
+
+        all_fields = [ i for i in form.find("input").items() ]
+
+        if len(all_fields) > fieldname:
+            field = all_fields[fieldname]
+        else:
+            raise TwillAssertionError("no field matches \"%d\"" % fieldname)
+
+    except ValueError:
+        fields = [ i for i in form.find("input[name=%s]" % fieldname).items() ]
+
+        if len(fields) > 1:
+            raise TwillAssertionError("multiple field matches")
+
+        if fields:
+            field = fields[0]
+        else:
+            raise TwillAssertionError("no field matches \"%s\"" % fieldname)
+            
+    field.attr.value = value
+
+fv = formvalue
 
 def formaction(formname, action):
     """
@@ -496,6 +540,8 @@ def formaction(formname, action):
     Sets action parameter on form to action_url
     """
     raise TwillAssertionError("Not yet implemented")
+
+fa = formaction
 
 def formfile(formname, fieldname, filename, content_type=None):
     """
