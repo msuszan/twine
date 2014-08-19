@@ -74,6 +74,7 @@ class TwillBrowser(Browser):
                 if add_to_history and old_url:
                     self._history.append(old_url)
                 self.at_empty_page = False
+                self._soup = self._html_parser(self.html)
 
             return ret
         else:
@@ -123,3 +124,8 @@ class TwillBrowser(Browser):
         else:
             self.load("")
             return False
+
+    def _get_soup(self):
+        return self._soup
+
+    soup = property(_get_soup)
