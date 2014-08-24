@@ -392,7 +392,7 @@ def showforms():
 
         # Form fields(input and select)
         fields = [ i for i in form.find("input").items() ]
-        fields.extend([ s for s in form.find("select").items() ])
+        fields.extend([ i for i in form.find("select").items() ])
 
         if fields:
             print>>OUT, "## ## __Name__________________ __Type___ __ID________ __Value__________________"
@@ -405,9 +405,12 @@ def showforms():
                 print>>OUT, ("%-23s " % (_trunc(field.attr("name"), 23),)),
 
                 # Print form type
-                if field.attr("type"):
-                    print>>OUT, ("%-9s" % (_trunc(field.attr("type"), 9))),
-                else:
+                if field.is_("input"):
+                    if field.attr("type"):
+                        print>>OUT, ("%-9s" % (_trunc(field.attr("type"), 9))),
+                    else:
+                        print>>OUT, ("%-9s" % "text"),
+                elif field.is_("select"):
                     print>>OUT, ("%-9s" % "select"),
 
                 # Print form ID
