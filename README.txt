@@ -5,9 +5,9 @@ twill-spynner implements the twill scripting language using
 spynner(https://github.com/makinacorpus/spynner). This will allow
 for some new features, most notably JavaScript support.
 
-This is currently in an experimental state and should not be
-expected to be stable. Only a few core commands are available at
-the moment.
+This is currently in an experimental state, so things will
+probably break often. Most of the core commands are implemented
+so far, the main exception being form handling.
 
 A majority of the code is borrowed from twill itself.
 
