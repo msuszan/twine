@@ -361,7 +361,50 @@ def submit(submit_button=None):
     submit button clicked on by 'formvalue'.  If none can be found,
     submit submits the form with no submit button clicked.
     """
-    raise TwillAssertionError("Not yet implemented")
+    if submit_button:
+        raise TwillAssertionError("Not yet implemented")
+
+    if browser.last_form is None:
+        raise TwillAssertionError("No default submit available")
+
+    formname = browser.last_form
+
+    try:
+        formname = int(formname)
+        formname -= 1
+
+        all_forms = [ i for i in browser.soup("form").items() ]
+
+        if len(all_forms) > formname:
+            form = all_forms[formname]
+        else:
+            raise TwillAssertionError("no matching forms!")
+
+    except ValueError:
+        forms = [ i for i in browser.soup("form[name='%s']" % formname).items() ]
+
+        if len(forms) > 1:
+            raise TwillAssertionError("multiple form matches")
+
+        if forms:
+            form = forms[0]
+        else:
+            raise TwillAssertionError("no matching forms!")
+
+    submits = [ i for i in form.find("input[type=submit]").items() ]
+
+    if not submits:
+        raise TwillAssertionError("form has no submit button")
+    if len(submits) > 1:
+        raise TwillAssertionError("more than one submit button")
+
+    button = submits[0]
+
+    # This only works for submit buttons with a value for now
+    if button.attr.value:
+        browser.submit("input[value=%s]" % button.attr.value)
+    else:
+        raise TwillAssertionError("Not yet implemented")
 
 def _trunc(s, length):
     """
@@ -537,6 +580,9 @@ def formvalue(formname, fieldname, value):
         browser.fill("input[name=%s]" % fieldname, value)
     else:
         raise TwillAssertionError("Not yet implemented")
+
+    # Keep track of last form modified
+    browser.last_form = formname
 
 fv = formvalue
 

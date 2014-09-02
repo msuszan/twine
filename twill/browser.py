@@ -7,6 +7,10 @@ class TwillBrowser(Browser):
         self._http_status = ""
         self._history = []
 
+        # Last form modified by user
+        # Used for default submit command
+        self.last_form = None
+
         # Dictionary of dictionaries
         # Indexed first by url, and then by realm
         self._realmCredentials = {}
@@ -74,6 +78,7 @@ class TwillBrowser(Browser):
                 if add_to_history and old_url:
                     self._history.append(old_url)
                 self.at_empty_page = False
+                self.last_form = None
 
             return ret
         else:
