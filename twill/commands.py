@@ -77,8 +77,7 @@ import urlparse
 
 browser = TwillBrowser(debug_level = spynner.DEBUG)
 browser.set_html_parser(pyquery.PyQuery)
-browser.load_jquery(True)
-        
+
 def get_browser():
     return browser
 
@@ -90,9 +89,8 @@ def reset_browser():
     """
     global browser
 
-    browser = TwillBrowser(debug_level = spynner.ERROR)
+    browser = TwillBrowser(debug_level = spynner.DEBUG)
     browser.set_html_parser(pyquery.PyQuery)
-    browser.load_jquery(True)
 
 def exit(code = "0"):
     """
@@ -534,8 +532,11 @@ def formvalue(formname, fieldname, value):
             field = fields[0]
         else:
             raise TwillAssertionError("no field matches \"%s\"" % fieldname)
-            
-    field.attr.value = value
+
+    if field.attr.type == "text":
+        browser.fill("input[name=%s]" % fieldname, value)
+    else:
+        raise TwillAssertionError("Not yet implemented")
 
 fv = formvalue
 
