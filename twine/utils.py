@@ -1,7 +1,7 @@
 """
-Various ugly utility functions for twill.
+Various ugly utility functions for twine.
 
-Apart from various simple utility functions, twill's robust parsing
+Apart from various simple utility functions, twine's robust parsing
 code is implemented in the ConfigurableParsingFactory class.
 """
 
@@ -13,7 +13,7 @@ import subprocess
 from lxml import etree, html, cssselect
 import re
 
-from errors import TwillException
+from errors import TwineException
 
 class ResultWrapper(object):
     """
@@ -190,7 +190,7 @@ def make_boolean(value):
             return True
         return False
 
-    raise TwillException("unable to convert '%s' into true/false" % (value,))
+    raise TwineException("unable to convert '%s' into true/false" % (value,))
 
 def set_form_control_value(control, val):
     """
@@ -202,7 +202,7 @@ def set_form_control_value(control, val):
             val = make_boolean(val)
             control.checked = val
             return
-        except TwillException:
+        except TwineException:
             # if there's more than one checkbox, use the behaviour for
             # ClientForm.ListControl, below.
             pass
@@ -257,13 +257,13 @@ def set_form_control_value(control, val):
                 except ValueError:
                     pass
                 return
-        raise(TwillException("Attempt to set invalid value"))
+        raise(TwineException("Attempt to set invalid value"))
         
     else:
         if(hasattr(control, 'type') and control.type != 'submit'):
             control.value = val
         #else:
-            #raise(TwillException("Attempt to set value on invalid control"))
+            #raise(TwineException("Attempt to set value on invalid control"))
 
 def _all_the_same_submit(matches):
     """
@@ -331,7 +331,7 @@ def run_tidy(html):
 
     if not _tidy_exists:
         if require_tidy:
-            raise TwillException("tidy does not exist and require_tidy is set")
+            raise TwineException("tidy does not exist and require_tidy is set")
         return (None, None)
     
     #
@@ -355,7 +355,7 @@ def run_tidy(html):
 
     errors = None
     if require_tidy and clean_html is None:
-        raise TwillException("tidy does not exist and require_tidy is set")
+        raise TwineException("tidy does not exist and require_tidy is set")
 
     return (clean_html, errors)
 
@@ -365,7 +365,7 @@ def _is_valid_filename(f):
 
 # Added so browser can ask whether to follow meta redirects
 def _follow_equiv_refresh():
-    from twill.commands import _options
+    from twine.commands import _options
     return _options.get('acknowledge_equiv_refresh')
 
 def gather_filenames(arglist):

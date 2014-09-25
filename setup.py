@@ -6,24 +6,22 @@ except ImportError:
     print '(WARNING: importing distutils, not setuptools!)'
     from distutils.core import setup
 
-#### twill info.
+# setup information
 
-setup(name = 'twill',
+setup(name = 'twine',
       
       version = '1.8.0',
-#      download_url = 'http://darcs.idyll.org/~t/projects/twill-0.9.tar.gz',
-      
-      description = 'twill Web browsing language',
+
+      description = 'twine Web browsing language',
       author = 'C. Titus Brown and Ben R. Taylor',
       author_email = 'titus@idyll.org',
       license='MIT',
 
-      packages = ['twill', 'twill.other_packages',
-                  'twill.extensions',
-                  'twill.extensions.match_parse'],
+      packages = ['twine', 'twine.extensions',
+                  'twine.extensions.match_parse'],
 
       # allow both 
-      entry_points = dict(console_scripts=['twill-sh = twill.shell:main'],),
+      entry_points = dict(console_scripts=['twine = twine.shell:main'],),
       scripts = ['twill-fork'],
       
       maintainer = 'C. Titus Brown',

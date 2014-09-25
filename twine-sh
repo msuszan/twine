@@ -1,0 +1,8 @@
+#! /usr/bin/env python
+
+"""
+twine shell
+"""
+
+import twine.shell
+twine.shell.main()

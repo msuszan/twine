@@ -11,7 +11,7 @@ Functions:
 """
 
 import socket
-from twill.errors import TwillAssertionError
+from twine.errors import TwineAssertionError
 
 try:
     import dns.resolver
@@ -32,7 +32,7 @@ def dns_a(host, ipaddress, server=None):
         if ipaddress == answer.address:
             return True
 
-    raise TwillAssertionError
+    raise TwineAssertionError
 
 def dns_cname(host, cname, server=None):
     """
@@ -50,7 +50,7 @@ def dns_cname(host, cname, server=None):
         if cname == answer.target:
             return True
 
-    raise TwillAssertionError
+    raise TwineAssertionError
 
 def dns_resolves(host, ipaddress, server=None):
     """
@@ -67,7 +67,7 @@ def dns_resolves(host, ipaddress, server=None):
         if ipaddress == answer.address:
             return True
 
-    raise TwillAssertionError
+    raise TwineAssertionError
 
 def dns_mx(host, mailserver, server=None):
     """
@@ -81,7 +81,7 @@ def dns_mx(host, mailserver, server=None):
         if mailserver == rdata.exchange:
             return True
 
-    raise TwillAssertionError
+    raise TwineAssertionError
 
 def dns_ns(host, query_ns, server=None):
     """
@@ -95,7 +95,7 @@ def dns_ns(host, query_ns, server=None):
         if query_ns == answer.target:
             return True
 
-    raise TwillAssertionError
+    raise TwineAssertionError
 
 ###
 

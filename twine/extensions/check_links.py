@@ -20,8 +20,8 @@ __all__ = ['check_links', 'report_bad_links']
 DEBUG=True
 
 import re
-from twill import commands
-from twill.errors import TwillAssertionError
+from twine import commands
+from twine.errors import TwineAssertionError
 
 ### first, set up config options & persistent 'bad links' memory...
 
@@ -49,7 +49,7 @@ def check_links(pattern = '', visited={}):
     is used to visit the pages, the referrer URL is properly set on the
     visit.
     """
-    from twill import commands
+    from twine import commands
 
     if DEBUG:
         print 'in check_links'
@@ -145,7 +145,7 @@ def check_links(pattern = '', visited={}):
         else:
             print>>OUT, '\nCould not follow %d links' % (len(failed),)
             print>>OUT, '\t%s\n' % '\n\t'.join(failed)
-            raise TwillAssertionError("broken links on page")
+            raise TwineAssertionError("broken links on page")
 
 def report_bad_links(fail_if_exist='+', flush_bad_links='+'):
     """
@@ -163,11 +163,11 @@ def report_bad_links(fail_if_exist='+', flush_bad_links='+'):
     """
     global bad_links_dict
     
-    from twill import utils
+    from twine import utils
     fail_if_exist = utils.make_boolean(fail_if_exist)
     flush_bad_links = utils.make_boolean(flush_bad_links)
 
-    from twill import commands
+    from twine import commands
     OUT = commands.OUT
 
     if not bad_links_dict:
@@ -183,4 +183,4 @@ def report_bad_links(fail_if_exist='+', flush_bad_links='+'):
             bad_links_dict = {}
 
         if fail_if_exist:
-            raise TwillAssertionError("broken links encountered")
+            raise TwineAssertionError("broken links encountered")

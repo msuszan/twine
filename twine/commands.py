@@ -1,6 +1,6 @@
 """
-Implementation of all of the individual 'twill' commands available through
-twill-sh.
+Implementation of all of the individual 'twine' commands available through
+twine-sh.
 """
 
 import sys
@@ -65,17 +65,17 @@ __all__ = ['get_browser',
 
 import re, getpass, time
 
-from errors import TwillException, TwillAssertionError
+from errors import TwineException, TwineAssertionError
 import utils
 from utils import set_form_control_value, run_tidy
-from namespaces import get_twill_glocals
+from namespaces import get_twine_glocals
 
-from browser import TwillBrowser
+from browser import TwineBrowser
 import spynner
 import pyquery
 import urlparse
 
-browser = TwillBrowser(debug_level = spynner.DEBUG)
+browser = TwineBrowser(debug_level = spynner.DEBUG)
 browser.set_html_parser(pyquery.PyQuery)
 
 def get_browser():
@@ -89,14 +89,14 @@ def reset_browser():
     """
     global browser
 
-    browser = TwillBrowser(debug_level = spynner.DEBUG)
+    browser = TwineBrowser(debug_level = spynner.DEBUG)
     browser.set_html_parser(pyquery.PyQuery)
 
 def exit(code = "0"):
     """
     exit [<code>]
 
-    Exits twill, with the given exit code (defaults to 0, "no error").
+    Exits twine, with the given exit code (defaults to 0, "no error").
     """
     raise SystemExit(int(code))
 
@@ -111,7 +111,7 @@ def go(url):
     if success:
         print>>OUT, '==> at', browser.url
     else:
-        raise TwillException("cannot go to '%s'" % (url,))
+        raise TwineException("cannot go to '%s'" % (url,))
 
     return browser.url
 
@@ -132,7 +132,7 @@ def code(should_be):
     """
     actual = browser.http_status or "None"
     if actual != should_be:
-        raise TwillAssertionError("code is %s != %s" % (actual,
+        raise TwineAssertionError("code is %s != %s" % (actual,
                                                         should_be))
 
 def tidy_ok():
@@ -145,7 +145,7 @@ def tidy_ok():
     If 'tidy' cannot be run, will fail silently (unless 'tidy_should_exist'
     option is true; see 'config' command).
     """
-    raise TwillAssertionError("Not yet implemented")
+    raise TwineAssertionError("Not yet implemented")
 
 def url(should_be):
     """
@@ -164,7 +164,7 @@ def url(should_be):
         current_url = ''
 
     if not m:
-        raise TwillAssertionError("""\
+        raise TwineAssertionError("""\
 current url is '%s';
 does not match '%s'
 """ % (current_url, should_be,))
@@ -174,7 +174,7 @@ does not match '%s'
     else:
         match_str = m.group(0)
 
-    global_dict, local_dict = get_twill_glocals()
+    global_dict, local_dict = get_twine_glocals()
     local_dict['__match__'] = match_str
     return match_str
 
@@ -200,7 +200,7 @@ def follow(what):
         print>>OUT, '==> at', browser.url
         return browser.url
 
-    raise TwillAssertionError("no links match to '%s'" % (what,))
+    raise TwineAssertionError("no links match to '%s'" % (what,))
 
 def _parseFindFlags(flags):
     KNOWN_FLAGS = {
@@ -213,7 +213,7 @@ def _parseFindFlags(flags):
         try:
             finalFlags |= KNOWN_FLAGS[char]
         except IndexError:
-            raise TwillAssertionError("unknown 'find' flag %r" % char)
+            raise TwineAssertionError("unknown 'find' flag %r" % char)
     return finalFlags
 
 def find(what, flags=''):
@@ -237,14 +237,14 @@ def find(what, flags=''):
 
     m = regexp.search(page)
     if not m:
-        raise TwillAssertionError("no match to '%s'" % (what,))
+        raise TwineAssertionError("no match to '%s'" % (what,))
 
     if m.groups():
         match_str = m.group(1)
     else:
         match_str = m.group(0)
 
-    _, local_dict = get_twill_glocals()
+    _, local_dict = get_twine_glocals()
     local_dict['__match__'] = match_str
 
 def notfind(what, flags=''):
@@ -257,7 +257,7 @@ def notfind(what, flags=''):
     page = browser.html
 
     if regexp.search(page):
-        raise TwillAssertionError("match to '%s'" % (what,))
+        raise TwineAssertionError("match to '%s'" % (what,))
 
 def back():
     """
@@ -343,7 +343,7 @@ def agent(what):
     Some convenient shortcuts:
       ie5, ie55, ie6, moz17, opera7, konq32, saf11, aol9.
     """
-    raise TwillAssertionError("Not yet implemented")
+    raise TwineAssertionError("Not yet implemented")
 
 def submit(submit_button=None):
     """
@@ -362,10 +362,10 @@ def submit(submit_button=None):
     submit submits the form with no submit button clicked.
     """
     if submit_button:
-        raise TwillAssertionError("Not yet implemented")
+        raise TwineAssertionError("Not yet implemented")
 
     if browser.last_form is None:
-        raise TwillAssertionError("No default submit available")
+        raise TwineAssertionError("No default submit available")
 
     formname = browser.last_form
 
@@ -378,25 +378,25 @@ def submit(submit_button=None):
         if len(all_forms) > formname:
             form = all_forms[formname]
         else:
-            raise TwillAssertionError("no matching forms!")
+            raise TwineAssertionError("no matching forms!")
 
     except ValueError:
         forms = [ i for i in browser.soup("form[name='%s']" % formname).items() ]
 
         if len(forms) > 1:
-            raise TwillAssertionError("multiple form matches")
+            raise TwineAssertionError("multiple form matches")
 
         if forms:
             form = forms[0]
         else:
-            raise TwillAssertionError("no matching forms!")
+            raise TwineAssertionError("no matching forms!")
 
     submits = [ i for i in form.find("input[type=submit]").items() ]
 
     if not submits:
-        raise TwillAssertionError("form has no submit button")
+        raise TwineAssertionError("form has no submit button")
     if len(submits) > 1:
-        raise TwillAssertionError("more than one submit button")
+        raise TwineAssertionError("more than one submit button")
 
     button = submits[0]
 
@@ -404,7 +404,7 @@ def submit(submit_button=None):
     if button.attr.value:
         browser.submit("input[value=%s]" % button.attr.value)
     else:
-        raise TwillAssertionError("Not yet implemented")
+        raise TwineAssertionError("Not yet implemented")
 
 def _trunc(s, length):
     """
@@ -504,7 +504,7 @@ def formclear(formname):
     
     Run 'clear' on all of the controls in this form.
     """
-    raise TwillAssertionError("Not yet implemented")
+    raise TwineAssertionError("Not yet implemented")
 
 def formvalue(formname, fieldname, value):
     """
@@ -541,18 +541,18 @@ def formvalue(formname, fieldname, value):
         if len(all_forms) > formname:
             form = all_forms[formname]
         else:
-            raise TwillAssertionError("no matching forms!")
+            raise TwineAssertionError("no matching forms!")
 
     except ValueError:
         forms = [ i for i in browser.soup("form[name='%s']" % formname).items() ]
 
         if len(forms) > 1:
-            raise TwillAssertionError("multiple form matches")
+            raise TwineAssertionError("multiple form matches")
         
         if forms:
             form = forms[0]
         else:
-            raise TwillAssertionError("no matching forms!")
+            raise TwineAssertionError("no matching forms!")
 
     try:
         fieldname = int(fieldname)
@@ -563,23 +563,23 @@ def formvalue(formname, fieldname, value):
         if len(all_fields) > fieldname:
             field = all_fields[fieldname]
         else:
-            raise TwillAssertionError("no field matches \"%d\"" % fieldname)
+            raise TwineAssertionError("no field matches \"%d\"" % fieldname)
 
     except ValueError:
         fields = [ i for i in form.find("input[name=%s]" % fieldname).items() ]
 
         if len(fields) > 1:
-            raise TwillAssertionError("multiple field matches")
+            raise TwineAssertionError("multiple field matches")
 
         if fields:
             field = fields[0]
         else:
-            raise TwillAssertionError("no field matches \"%s\"" % fieldname)
+            raise TwineAssertionError("no field matches \"%s\"" % fieldname)
 
     if field.attr.type == "text":
         browser.fill("input[name=%s]" % fieldname, value)
     else:
-        raise TwillAssertionError("Not yet implemented")
+        raise TwineAssertionError("Not yet implemented")
 
     # Keep track of last form modified
     browser.last_form = formname
@@ -592,7 +592,7 @@ def formaction(formname, action):
 
     Sets action parameter on form to action_url
     """
-    raise TwillAssertionError("Not yet implemented")
+    raise TwineAssertionError("Not yet implemented")
 
 fa = formaction
 
@@ -602,7 +602,7 @@ def formfile(formname, fieldname, filename, content_type=None):
 
     Upload a file via an "upload file" form field.
     """
-    raise TwillAssertionError("Not yet implemented")
+    raise TwineAssertionError("Not yet implemented")
 
 def extend_with(module_name):
     """
@@ -610,14 +610,14 @@ def extend_with(module_name):
     
     Import contents of given module.
     """
-    raise TwillAssertionError("Not yet implemented")
+    raise TwineAssertionError("Not yet implemented")
 
 def getinput(prompt):
     """
     >> getinput <prompt>
     Get input, store it in '__input__'.
     """
-    raise TwillAssertionError("Not yet implemented")
+    raise TwineAssertionError("Not yet implemented")
 
 def getpassword(prompt):
     """
@@ -625,7 +625,7 @@ def getpassword(prompt):
     
     Get a password ("invisible input"), store it in '__password__'.
     """
-    raise TwillAssertionError("Not yet implemented")
+    raise TwineAssertionError("Not yet implemented")
 
 def save_cookies(filename):
     """
@@ -633,7 +633,7 @@ def save_cookies(filename):
 
     Save all of the current cookies to the given file.
     """
-    raise TwillAssertionError("Not yet implemented")
+    raise TwineAssertionError("Not yet implemented")
 
 def load_cookies(filename):
     """
@@ -641,7 +641,7 @@ def load_cookies(filename):
 
     Clear the cookie jar and load cookies from the given file.
     """
-    raise TwillAssertionError("Not yet implemented")
+    raise TwineAssertionError("Not yet implemented")
 
 def clear_cookies():
     """
@@ -689,7 +689,7 @@ def debug(what, level):
        * commands (any level >= 1), to display the commands being executed.
        * equiv-refresh (any level >= 1) to display HTTP-EQUIV refresh handling.
     """
-    raise TwillAssertionError("Not yet implemented")
+    raise TwineAssertionError("Not yet implemented")
 
 def run(cmd):
     """
@@ -697,14 +697,14 @@ def run(cmd):
 
     <command> can be any valid python command; 'exec' is used to run it.
     """
-    raise TwillAssertionError("Not yet implemented")
+    raise TwineAssertionError("Not yet implemented")
 
 def runfile(*files):
     """
     >> runfile <file1> [ <file2> ... ]
 
     """
-    raise TwillAssertionError("Not yet implemented")
+    raise TwineAssertionError("Not yet implemented")
 
 def setglobal(name, value):
     """
@@ -712,7 +712,7 @@ def setglobal(name, value):
 
     Sets the variable <name> to the value <value> in the global namespace.
     """
-    global_dict, local_dict = get_twill_glocals()
+    global_dict, local_dict = get_twine_glocals()
     global_dict[name] = value
 
 def setlocal(name, value):
@@ -721,7 +721,7 @@ def setlocal(name, value):
 
     Sets the variable <name> to the value <value> in the local namespace.
     """
-    global_dict, local_dict = get_twill_glocals()
+    global_dict, local_dict = get_twine_glocals()
     local_dict[name] = value
 
 def title(what):
@@ -737,42 +737,42 @@ def title(what):
 
     m = regexp.search(title)
     if not m:
-        raise TwillAssertionError("title does not contain '%s'" % (what,))
+        raise TwineAssertionError("title does not contain '%s'" % (what,))
 
 def redirect_output(filename):
     """
     >> redirect_output <filename>
 
-    Append all twill output to the given file.
+    Append all twine output to the given file.
     """
-    raise TwillAssertionError("Not yet implemented")
+    raise TwineAssertionError("Not yet implemented")
 
 def reset_output():
     """
     >> reset_output
 
-    Reset twill output to go to the screen.
+    Reset twine output to go to the screen.
     """
-    raise TwillAssertionError("Not yet implemented")
+    raise TwineAssertionError("Not yet implemented")
 
 def redirect_error(filename):
     """
     >> redirect_error <filename>
 
-    Append all twill error output to the given file.
+    Append all twine error output to the given file.
     """
-    import twill
+    import twine
     fp = open(filename, 'a')
-    twill.set_output(fp)
+    twine.set_output(fp)
 
 def reset_error():
     """
     >> reset_error
     
-    Reset twill error output to go to the screen.
+    Reset twine error output to go to the screen.
     """
-    import twill
-    twill.set_output(None)
+    import twine
+    twine.set_output(None)
 
 def add_extra_header(header_key, header_value):
     """
@@ -854,7 +854,7 @@ def _make_boolean(value):
             return True
         return False
 
-    raise TwillException("unable to convert '%s' into true/false" % (value,))
+    raise TwineException("unable to convert '%s' into true/false" % (value,))
 
 _orig_options = dict(readonly_controls_writeable=False,
                      use_tidy=True,
@@ -901,7 +901,7 @@ def config(key=None, value=None):
         if v is None:
             print>>OUT, '*** no such configuration key', key
             print>>OUT, 'valid keys are:', ";".join(_options.keys())
-            raise TwillException('no such configuration key: %s' % (key,))
+            raise TwineException('no such configuration key: %s' % (key,))
         elif value is None:
             print>>OUT, ''
             print>>OUT, 'key %s: value %s' % (key, v)
@@ -916,7 +916,7 @@ def info():
 
     Report information on current page.
     """
-    raise TwillAssertionError("Not yet implemented")
+    raise TwineAssertionError("Not yet implemented")
 
 def browse():
     """

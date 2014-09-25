@@ -8,7 +8,7 @@ Commands:
    
 """
 
-import twill.utils
+import twine.utils
 
 def get_args(require=0):
     """
@@ -17,19 +17,19 @@ def get_args(require=0):
     Load the command line arguments after the last '--' into $arg1...$argN,
     optionally requiring at least 'require' such arguments.
     """
-    from twill import commands, namespaces, shell, errors
+    from twine import commands, namespaces, shell, errors
 
-    global_dict, local_dict = namespaces.get_twill_glocals()
+    global_dict, local_dict = namespaces.get_twine_glocals()
 
     require = int(require)
 
-    if len(shell.twillargs) < require:
-        from twill.errors import TwillAssertionError
-        raise TwillAssertionError("too few arguments; %d rather than %d" % \
-                                    (len(shell.twillargs), require,))
+    if len(shell.twineargs) < require:
+        from twine.errors import TwineAssertionError
+        raise TwineAssertionError("too few arguments; %d rather than %d" % \
+                                    (len(shell.twineargs), require,))
 
-    if shell.twillargs:
-        for i, arg in enumerate(shell.twillargs):
+    if shell.twineargs:
+        for i, arg in enumerate(shell.twineargs):
             global_dict["arg%d" % (i + 1,)] = arg
 
         print>>commands.OUT, "get_args: loaded %d args as $arg1..$arg%d." % \

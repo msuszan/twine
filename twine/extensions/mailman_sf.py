@@ -6,7 +6,7 @@ mailman queue.
 for each and every message.)
 """
 
-import twill, twill.utils
+import twine, twine.utils
 import re
 
 # export:
@@ -21,7 +21,7 @@ def exit_if_empty():
     Exit the script currently running, if there are no deferred messages
     on the current page.
     """
-    state = twill.get_browser()
+    state = twine.get_browser()
     form = state.get_form("1")
     if not form:
         print "No messages; exiting."
@@ -38,7 +38,7 @@ def discard_all_messages():
 ### utility functions
 
 def _formvalue_by_regexp_setall(formname, fieldname, value):
-    state = twill.get_browser()
+    state = twine.get_browser()
     
     form = state.get_form(formname)
     if not form:
@@ -59,6 +59,6 @@ def _formvalue_by_regexp_setall(formname, fieldname, value):
                 continue
 
             n += 1
-            twill.utils.set_form_control_value(control, value)
+            twine.utils.set_form_control_value(control, value)
 
         print 'set %d values total' % (n,)

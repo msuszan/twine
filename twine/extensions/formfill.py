@@ -2,7 +2,7 @@
 Extension functions for easier form filling.
 
 (This module is a dumping ground for features that may ultimately get
-added into the main twill command set.)
+added into the main twine command set.)
 
 Commands:
 
@@ -18,7 +18,7 @@ Commands:
         
 """
 
-import twill, twill.utils
+import twine, twine.utils
 import re
 
 __all__ = [ 'fv_match', 'fv_multi_match', 'fv_multi', 'fv_multi_sub' ]
@@ -33,7 +33,7 @@ def fv_match(formname, regexp, value):
     (Unlike 'formvalue' or 'fv', this will not complain about multiple
     matches!)
     """
-    state = twill.get_browser()
+    state = twine.get_browser()
     
     form = state.get_form(formname)
     if form is None:
@@ -54,7 +54,7 @@ def fv_match(formname, regexp, value):
                 continue
 
             n += 1
-            twill.utils.set_form_control_value(control, value)
+            twine.utils.set_form_control_value(control, value)
 
         print 'set %d values total' % (n,)
 
@@ -66,7 +66,7 @@ def fv_multi_match(formname, regexp, *values):
     value.  If there are no more values, use the last for all remaining form
     fields
     """
-    state = twill.get_browser()
+    state = twine.get_browser()
     
     form = state.get_form(formname)
     if form is None:
@@ -86,9 +86,9 @@ def fv_multi_match(formname, regexp, *values):
             if 'readonly' in control.attrib.keys():
                 continue
             try:
-                twill.utils.set_form_control_value(control, values[n])
+                twine.utils.set_form_control_value(control, values[n])
             except IndexError, e:
-                twill.utils.set_form_control_value(control, values[-1])
+                twine.utils.set_form_control_value(control, values[-1])
             n += 1
 
         print 'set %d values total' % (n,)
@@ -106,7 +106,7 @@ def fv_multi(formname, *pairs):
     'fv <formname> fieldname value' will be executed in the order the
     pairs are given.
     """
-    from twill import commands
+    from twine import commands
 
     for p in pairs:
         fieldname, value = p.split('=', 1)
@@ -118,7 +118,7 @@ def fv_multi_sub(formname, *pairs):
 
     Set multiple form fields (as with 'fv_multi') and then submit().
     """
-    from twill import commands
+    from twine import commands
 
     for p in pairs:
         fieldname, value = p.split('=', 1)

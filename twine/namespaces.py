@@ -6,17 +6,17 @@ global_dict = {}
 
 def init_global_dict():
     """
-    Initialize global dictionary with twill commands.
+    Initialize global dictionary with twine commands.
 
     This must be done after all the other modules are loaded, so that all
     of the commands are already defined.
     """
-    exec "from twill.commands import *" in global_dict
-    import twill.commands
-    command_list = twill.commands.__all__
+    exec "from twine.commands import *" in global_dict
+    import twine.commands
+    command_list = twine.commands.__all__
     
-    import twill.parse
-    twill.parse.command_list.extend(command_list)
+    import twine.parse
+    twine.parse.command_list.extend(command_list)
 
 # local dictionaries.
 _local_dict_stack = []
@@ -42,7 +42,7 @@ def pop_local_dict():
 
 ###
 
-def get_twill_glocals():
+def get_twine_glocals():
     """
     Return global dict & current local dictionary.
     """

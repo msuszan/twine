@@ -1,12 +1,12 @@
 """
-A command-line interpreter for twill.
+A command-line interpreter for twine.
 
 This is an implementation of a command-line interpreter based on the
 'Cmd' class in the 'cmd' package of the default Python distribution.
 """
 
 import cmd
-from twill import commands, parse, __version__
+from twine import commands, parse, __version__
 import namespaces
 
 try:
@@ -16,13 +16,13 @@ except:
 
 def make_cmd_fn(cmd):
     """
-    Dynamically define a twill shell command function based on an imported
-    function name.  (This is where the twill.commands functions actually
+    Dynamically define a twine shell command function based on an imported
+    function name.  (This is where the twine.commands functions actually
     get executed.)
     """
     
     def do_cmd(rest_of_line, cmd=cmd):
-        global_dict, local_dict = namespaces.get_twill_glocals()
+        global_dict, local_dict = namespaces.get_twine_glocals()
 
         args = []
         if rest_of_line.strip() != "":
@@ -45,7 +45,7 @@ def make_cmd_fn(cmd):
 
 def make_help_cmd(cmd, docstring):
     """
-    Dynamically define a twill shell help function for the given
+    Dynamically define a twine shell help function for the given
     command/docstring.
     """
     def help_cmd(message=docstring, cmd=cmd):
@@ -73,7 +73,7 @@ class Singleton(object):
         pass
 
 #
-# TwillCommandLoop
+# TwineCommandLoop
 #
 
 def add_command(cmd, docstring):
@@ -82,11 +82,11 @@ def add_command(cmd, docstring):
         x.add_command(cmd, docstring)
         
 def get_command_shell():
-    return getattr(TwillCommandLoop, '__it__', None)
+    return getattr(TwineCommandLoop, '__it__', None)
 
-class TwillCommandLoop(Singleton, cmd.Cmd):
+class TwineCommandLoop(Singleton, cmd.Cmd):
     """
-    Command-line interpreter for twill commands.  Singleton object: you
+    Command-line interpreter for twine commands.  Singleton object: you
     can't create more than one of these at a time.
 
     Note: most of the do_ and help_ functions are dynamically created
@@ -105,7 +105,7 @@ class TwillCommandLoop(Singleton, cmd.Cmd):
         # import readline history, if available.
         if readline:
             try:
-                readline.read_history_file('.twill-history')
+                readline.read_history_file('.twine-history')
             except IOError:
                 pass
 
@@ -120,9 +120,9 @@ class TwillCommandLoop(Singleton, cmd.Cmd):
 
         self.names = []
         
-        global_dict, local_dict = namespaces.get_twill_glocals()
+        global_dict, local_dict = namespaces.get_twine_glocals()
 
-        ### add all of the commands from twill.
+        ### add all of the commands from twine.
         for command in parse.command_list:
             fn = global_dict.get(command)
             self.add_command(command, fn.__doc__)
@@ -213,7 +213,7 @@ class TwillCommandLoop(Singleton, cmd.Cmd):
         line = line.strip()
 
         # look for command
-        global_dict, local_dict = namespaces.get_twill_glocals()
+        global_dict, local_dict = namespaces.get_twine_glocals()
         cmd, args = parse.parse_command(line, global_dict, local_dict)
 
         # ignore comments & empty stuff
@@ -237,7 +237,7 @@ class TwillCommandLoop(Singleton, cmd.Cmd):
     def do_EOF(self, *args):
         "Exit on CTRL-D"
         if readline:
-            readline.write_history_file('.twill-history')
+            readline.write_history_file('.twine-history')
             
         raise SystemExit()
 
@@ -245,8 +245,8 @@ class TwillCommandLoop(Singleton, cmd.Cmd):
         print "\nWhat do YOU think the command 'help' does?!?\n"
 
     def do_version(self, *args):
-        print "\ntwill version %s.\n" % (__version__,)
-        print "See http://www.idyll.org/~t/www-tools/twill/ for more info."
+        print "\ntwine version %s.\n" % (__version__,)
+        print "See http://www.idyll.org/~t/www-tools/twine/ for more info."
         print ""
 
     def help_version(self):
@@ -256,21 +256,21 @@ class TwillCommandLoop(Singleton, cmd.Cmd):
         raise SystemExit()
 
     def help_exit(self):
-        print "\nExit twill.\n"
+        print "\nExit twine.\n"
 
     do_quit = do_exit
     help_quit = help_exit
 
 ####
 
-twillargs = []                          # contains sys.argv *after* last '--'
+twineargs = []                          # contains sys.argv *after* last '--'
 interactive = False                     # 'True' if interacting with user
 def main():
-    global twillargs, interactive
+    global twineargs, interactive
     
     import sys
-    from twill import TwillCommandLoop, execute_file, __version__
-    from twill.utils import gather_filenames
+    from twine import TwineCommandLoop, execute_file, __version__
+    from twine.utils import gather_filenames
     from optparse import OptionParser
     from cStringIO import StringIO
 
@@ -317,13 +317,13 @@ def main():
                 break
 
         if found:
-            twillargs = sysargs[last + 1:]
+            twineargs = sysargs[last + 1:]
             sysargs = sysargs[:last]
 
     (options, args) = parser.parse_args(sysargs)
 
     if options.show_version:
-        print 'twill version %s.' % (__version__,)
+        print 'twine version %s.' % (__version__,)
         sys.exit(0)
 
     if options.quiet:
@@ -373,10 +373,10 @@ def main():
     if not args or options.interact:
         welcome_msg = ""
         if not args:
-            welcome_msg = "\n -= Welcome to twill! =-\n"
+            welcome_msg = "\n -= Welcome to twine! =-\n"
 
         interactive = True
-        shell = TwillCommandLoop(initial_url=options.url)
+        shell = TwineCommandLoop(initial_url=options.url)
 
         while 1:
             try:

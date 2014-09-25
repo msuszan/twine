@@ -1,8 +1,8 @@
 from spynner import *
 
-class TwillBrowser(Browser):
+class TwineBrowser(Browser):
     def __init__(self, debug_level):
-        super(TwillBrowser, self).__init__(debug_level = debug_level)
+        super(TwineBrowser, self).__init__(debug_level = debug_level)
         self.headers = [("Accept", "text/html; */*")]
         self._http_status = ""
         self._history = []
@@ -28,14 +28,14 @@ class TwillBrowser(Browser):
         if self.at_empty_page:
             return ""
         else:
-            return super(TwillBrowser, self).url
+            return super(TwineBrowser, self).url
 
     @property
     def html(self):
         if self.at_empty_page:
             return ""
         else:
-            return super(TwillBrowser, self).html
+            return super(TwineBrowser, self).html
 
     @property
     def http_status(self):
@@ -71,7 +71,7 @@ class TwillBrowser(Browser):
             old_url = self.url
             self._http_statuses = {} 
 
-            ret = super(TwillBrowser, self).load(url)
+            ret = super(TwineBrowser, self).load(url)
 
             if ret:
                 self._http_status = self._http_statuses.get(self.url, "")
@@ -108,7 +108,7 @@ class TwillBrowser(Browser):
             return True
 
     def _on_reply(self, reply):
-        super(TwillBrowser, self)._on_reply(reply)
+        super(TwineBrowser, self)._on_reply(reply)
 
         print self._reply_url
 

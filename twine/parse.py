@@ -1,16 +1,16 @@
 """
-Code parsing and evaluation for the twill mini-language.
+Code parsing and evaluation for the twine mini-language.
 """
 
 import sys
 from cStringIO import StringIO
 
-from errors import TwillAssertionError, TwillNameError
+from errors import TwineAssertionError, TwineNameError
 from pyparsing import OneOrMore, Word, printables, quotedString, Optional, \
      alphas, alphanums, ParseException, ZeroOrMore, restOfLine, Combine, \
      Literal, Group, removeQuotes, CharsNotIn
 
-import twill.commands as commands
+import twine.commands as commands
 import namespaces
 import re
 
@@ -114,7 +114,7 @@ def execute_command(cmd, args, globals_dict, locals_dict, cmdinfo):
     locals_dict['__cmd__'] = cmd
     locals_dict['__args__'] = args
     if cmd not in command_list:
-        raise TwillNameError("unknown twill command: '%s'" % (cmd,))
+        raise TwineNameError("unknown twine command: '%s'" % (cmd,))
 
     eval_str = "%s(*__args__)" % (cmd,)
 
@@ -141,7 +141,7 @@ def parse_command(line, globals_dict, locals_dict):
     res = full_command.parseString(line)
     if res:
         if _print_commands:
-            print>>commands.OUT, "twill: executing cmd '%s'" % (line.strip(),)
+            print>>commands.OUT, "twine: executing cmd '%s'" % (line.strip(),)
             
         args = process_args(res.arguments.asList(), globals_dict, locals_dict)
         return (res.command, args)
@@ -182,7 +182,7 @@ def _execute_script(inp, **kw):
     """
     # initialize new local dictionary & get global + current local
     namespaces.new_local_dict()
-    globals_dict, locals_dict = namespaces.get_twill_glocals()
+    globals_dict, locals_dict = namespaces.get_twine_glocals()
     
     locals_dict['__url__'] = commands.get_browser().url
 
@@ -222,9 +222,9 @@ def _execute_script(inp, **kw):
             except SystemExit:
                 # abort script execution, if a SystemExit is raised.
                 return
-            except TwillAssertionError, e:
+            except TwineAssertionError, e:
                 print>>commands.ERR, '''\
-Oops!  Twill assertion error on line %d of '%s' while executing
+Oops!  Twine assertion error on line %d of '%s' while executing
 
   >> %s
 

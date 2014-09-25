@@ -31,12 +31,12 @@ def _require_post_load_hook(action, *args, **kwargs):
     """
     post-load hook function to be called after each page is loaded.
     
-    See TwillBrowser._journey() for more information.
+    See TwineBrowser._journey() for more information.
     """
     if action == 'back':                # do nothing on a 'back'
         return
     
-    from twill import commands
+    from twine import commands
     OUT=commands.OUT
 
     global ignore_once
@@ -78,7 +78,7 @@ def _require_post_load_hook(action, *args, **kwargs):
 #######
 
 #
-# twill command-line functions.
+# twine command-line functions.
 #
 
 def skip_require():
@@ -101,7 +101,7 @@ def require(what):
                       extension module)
     """
     global _requirements
-    from twill import commands
+    from twine import commands
 
     #
     # install the post-load hook function.
@@ -127,7 +127,7 @@ def no_require():
 
     Remove all post-load requirements.
     """
-    from twill import commands
+    from twine import commands
     
     l = commands.browser._post_load_hooks
     l = [ fn for fn in l if fn != _require_post_load_hook ]

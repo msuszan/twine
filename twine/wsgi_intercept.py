@@ -253,7 +253,7 @@ class wsgi_fake_socket:
         # necessarily get called until the first result is requested from
         # the app function.
         #
-        # see twill tests, 'test_wrapper_intercept' for a test that breaks
+        # see twine tests, 'test_wrapper_intercept' for a test that breaks
         # if this is done incorrectly.
 
         try:

@@ -1,5 +1,5 @@
 """
-Support functionality for using twill in unit tests.
+Support functionality for using twine in unit tests.
 """
 
 import sys, os, time
@@ -42,7 +42,7 @@ class TestInfo:
 
     def run_script(self):
         """
-        Run the given twill script on the given server.
+        Run the given twine script on the given server.
         """
         time.sleep(self.sleep)
         url = self.get_url()
@@ -68,7 +68,7 @@ def run_test(test_info):
         # never returns...
 
     #
-    # run twill test script.
+    # run twine test script.
     #
     
     child_pid = pid
