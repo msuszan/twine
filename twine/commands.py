@@ -60,7 +60,8 @@ __all__ = ['get_browser',
            'show_extra_headers',
            'clear_extra_headers',
            'info',
-           'browse'
+           'browse',
+           'run'
            ]
 
 import re, getpass, time
@@ -926,3 +927,11 @@ def browse():
     is closed.
     """
     browser.browse()
+
+def run(code):
+    """
+    >> run <code>
+
+    Runs JavaScript code.
+    """
+    browser.runjs(code)
