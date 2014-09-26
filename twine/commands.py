@@ -61,7 +61,8 @@ __all__ = ['get_browser',
            'clear_extra_headers',
            'info',
            'browse',
-           'run'
+           'run',
+           'save_screenshot'
            ]
 
 import re, getpass, time
@@ -935,3 +936,12 @@ def run(code):
     Runs JavaScript code.
     """
     browser.runjs(code)
+
+def save_screenshot(filename):
+    """
+    >> save_screenshot <filename>
+
+    Saves a screenshot of the current page. File format dependent on
+    the filename extension.
+    """
+    browser.snapshot().save(filename)
