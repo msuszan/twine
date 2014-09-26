@@ -1,36 +1,25 @@
 #!/usr/bin/env python
 
-try:
-    from setuptools import setup
-except ImportError:
-    print '(WARNING: importing distutils, not setuptools!)'
-    from distutils.core import setup
+from setuptools import setup
 
 # setup information
-
 setup(name = 'twine',
-      
-      version = '1.8.0',
+      description = 'An implementation of twill based on spynner',
+      author = 'Joshua Curl, C. Titus Brown, and Ben R. Taylor',
+      author_email = 'curljosh@msu.edu',
 
-      description = 'twine Web browsing language',
-      author = 'C. Titus Brown and Ben R. Taylor',
-      author_email = 'titus@idyll.org',
       license='MIT',
-
       packages = ['twine', 'twine.extensions',
                   'twine.extensions.match_parse'],
-
       # allow both 
       entry_points = dict(console_scripts=['twine = twine.shell:main'],),
       scripts = ['twill-fork'],
-      
-      maintainer = 'C. Titus Brown',
-      maintainer_email = 'titus@idyll.org',
 
-      url = 'http://twill.idyll.org/',
+      maintainer = 'Joshua Curl',
+      maintainer_email = 'curljosh@msu.edu',
+      url = 'https://github.com/joshuacurl/twine',
       long_description = """\
-A scripting system for automating Web browsing.  Useful for testing
-Web pages or grabbing data from password-protected sites automatically.
+twill is an implementation of the twill scripting language using spynner. This will allow for some new features, most notably JavaScript support.
 """,
       classifiers = ['Development Status :: 4 - Beta',
                      'Environment :: Console',
@@ -44,6 +33,5 @@ Web pages or grabbing data from password-protected sites automatically.
                      'Topic :: Internet :: WWW/HTTP',
                      'Topic :: Software Development :: Testing',
                      ],
-
       test_suite = 'nose.collector'
       )
