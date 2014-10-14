@@ -190,9 +190,7 @@ class TwineCommandLoop(Singleton, cmd.Cmd):
 
     def _set_prompt(self):
         "Set the prompt to the current page."
-        url = commands.get_browser().url
-        if url is None:
-            url = " *empty page* "
+        url = commands.get_browser().url or " *empty page* "
         self.prompt = "current page: %s\n>> " % (url,)
 
     def precmd(self, line):
