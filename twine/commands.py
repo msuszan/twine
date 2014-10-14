@@ -747,7 +747,9 @@ def redirect_output(filename):
 
     Append all twine output to the given file.
     """
-    raise TwineAssertionError("Not yet implemented")
+    import twine
+    fp = open(filename, 'a')
+    twine.set_output(fp)
 
 def reset_output():
     """
@@ -755,7 +757,8 @@ def reset_output():
 
     Reset twine output to go to the screen.
     """
-    raise TwineAssertionError("Not yet implemented")
+    import twine
+    twine.set_output(None)
 
 def redirect_error(filename):
     """
