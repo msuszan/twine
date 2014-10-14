@@ -43,6 +43,7 @@ __all__ = ['get_browser',
            'clear_cookies',
            'show_cookies',
            'add_auth',
+           'run_python',
            'run',
            'runfile',
            'setglobal',
@@ -61,7 +62,7 @@ __all__ = ['get_browser',
            'clear_extra_headers',
            'info',
            'browse',
-           'run',
+           'run_javascript',
            'save_screenshot'
            ]
 
@@ -693,20 +694,34 @@ def debug(what, level):
     """
     raise TwineAssertionError("Not yet implemented")
 
-def run(cmd):
+def run_python(cmd):
     """
-    >> run <command>
+    >> run_python <command>
 
     <command> can be any valid python command; 'exec' is used to run it.
     """
-    raise TwineAssertionError("Not yet implemented")
+    global_dict, local_dict = get_twine_glocals()
+
+    import commands
+
+    # set __url__
+    local_dict['__cmd__'] = cmd
+    local_dict['__url__'] = commands.browser.url
+
+    exec(cmd, global_dict, local_dict)
+
+run = run_python
 
 def runfile(*files):
     """
     >> runfile <file1> [ <file2> ... ]
 
     """
-    raise TwineAssertionError("Not yet implemented")
+    import parse
+    global_dict, local_dict = get_twine_glocals()
+
+    for f in files:
+        parse.execute_file(f, no_reset=True)
 
 def setglobal(name, value):
     """
@@ -932,9 +947,9 @@ def browse():
     """
     browser.browse()
 
-def run(code):
+def run_javascript(code):
     """
-    >> run <code>
+    >> run_javascript <code>
 
     Runs JavaScript code.
     """
