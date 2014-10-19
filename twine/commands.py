@@ -78,7 +78,7 @@ import spynner
 import pyquery
 import urlparse
 
-browser = TwineBrowser(debug_level = spynner.DEBUG)
+browser = TwineBrowser(debug_level = spynner.ERROR)
 browser.set_html_parser(pyquery.PyQuery)
 
 def get_browser():
@@ -92,7 +92,7 @@ def reset_browser():
     """
     global browser
 
-    browser = TwineBrowser(debug_level = spynner.DEBUG)
+    browser = TwineBrowser(debug_level = spynner.ERROR)
     browser.set_html_parser(pyquery.PyQuery)
 
 def exit(code = "0"):
@@ -106,7 +106,7 @@ def exit(code = "0"):
 def go(url):
     """
     >> go <url>
-    
+
     Visit the URL given.
     """
     success = browser.go(url)
@@ -121,7 +121,7 @@ def go(url):
 def reload():
     """
     >> reload
-    
+
     Reload the current URL.
     """
     browser.load(browser.url, False)
@@ -926,7 +926,38 @@ def info():
 
     Report information on current page.
     """
-    raise TwineAssertionError("Not yet implemented")
+    current_url = browser.url
+    if current_url == "":
+        print "We're not on a page!"
+        return
+
+    content_type = browser.content_type
+
+    check_html = False
+    if content_type.startswith('text/html'):
+        check_html = True
+
+    code = browser.http_status
+
+    print >>OUT, '\nPage information:'
+    print >>OUT, '\tURL:', current_url
+    print >>OUT, '\tHTTP code:', code
+    print >>OUT, '\tContent type:', content_type,
+
+    if check_html:
+        print >>OUT, '(HTML)'
+    else:
+        print ''
+
+    if check_html:
+        title = browser.title
+        print >>OUT, '\tPage title:', title
+
+        form_count = len(browser.soup("form"))
+        if form_count:
+            print >>OUT, '\tThis page contains %d form(s)' % (form_count,)
+
+    print >>OUT, ''
 
 def browse():
     """

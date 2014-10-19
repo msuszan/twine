@@ -136,8 +136,6 @@ class TwineBrowser(Browser):
         except:
             content_type = ""
 
-        print content_type
-
         self._content_types[self._reply_url] = content_type
 
     def back(self):
