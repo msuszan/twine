@@ -1,4 +1,15 @@
-from flask import Flask, render_template
+from flask import Flask, request, render_template
+from wtforms import Form, BooleanField, TextField, PasswordField, validators
+
+class ContrivedForm(Form):
+    name = TextField('Name', [validators.Length(min=4, max=25)])
+    password = PasswordField('New Password', [
+        validators.Required(),
+        validators.EqualTo('confirm', message='Passwords must match')
+    ])
+    confirm = PasswordField('Repeat Password')
+    accept_tos = BooleanField('I accept the TOS', [validators.Required()])
+
 test_server = Flask(__name__)
 
 @test_server.route("/")
@@ -9,5 +20,12 @@ def index():
 def link():
   return render_template("link.html")
 
+@test_server.route('/form', methods=['GET', 'POST'])
+def register():
+  form = ContrivedForm(request.form)
+  if request.method == 'POST' and form.validate():
+    return render_template('submit.html', name=form.name.data)
+  return render_template('form.html', form=form)
+
 if __name__ == "__main__":
-    test_server.run()
+    test_server.run(debug = True)
