@@ -92,6 +92,8 @@ class TwineBrowser(Browser):
                 self._content_type = self._content_types.get(self.url, "")
                 self._title =  self.soup("title").text() or ""
 
+                self.load_jquery(True)
+
             return ret
         else:
             self.at_empty_page = True
