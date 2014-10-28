@@ -1,14 +1,29 @@
 from flask import Flask, request, render_template
-from wtforms import Form, BooleanField, TextField, PasswordField, validators
+from wtforms import Form, validators
+from wtforms import TextField, PasswordField, BooleanField, RadioField
+from wtforms import SelectField, TextAreaField
 
 class ContrivedForm(Form):
     name = TextField('Name', [validators.Length(min=4, max=25)])
-    password = PasswordField('New Password')
+
     password = PasswordField('New Password', [
         validators.Required(),
         validators.EqualTo('confirm', message='Passwords must match')
     ])
     confirm = PasswordField('Repeat Password')
+
+    gender = RadioField('Gender', choices=[('male','Male'),
+        ('female','Female')])
+
+    language_choices = [
+        ('cpp', 'C++'),
+        ('py', 'Python'),
+        ('js', 'JavaScript')
+    ]
+    language = SelectField('Programming Language', choices=language_choices)
+
+    comments = TextAreaField()
+
     accept_tos = BooleanField('I accept the TOS')
 
 test_server = Flask(__name__)
