@@ -1,0 +1,13 @@
+<html>
+<head>
+  <title>Submit Page</title>
+</head>
+<body>
+  <p>Your name is {{ form.name.data }}</p>
+  <p>Your password is {{ form.password.data }}</p>
+  <p>Your gender is {{ form.gender.data }}</p>
+  <p>Your language is {{ form.language.data }}</p>
+  <p>You had the following comments: {{ form.comments.data }}</p>
+  <p>You {{ "accepted" if form.accept_tos.data else "rejected" }} the TOS</p>
+</body>
+</html>
