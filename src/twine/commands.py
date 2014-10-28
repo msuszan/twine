@@ -78,7 +78,7 @@ import spynner
 import pyquery
 import urlparse
 
-browser = TwineBrowser(debug_level = spynner.ERROR)
+browser = TwineBrowser(debug_level = spynner.DEBUG)
 browser.set_html_parser(pyquery.PyQuery)
 
 def get_browser():
@@ -92,7 +92,7 @@ def reset_browser():
     """
     global browser
 
-    browser = TwineBrowser(debug_level = spynner.ERROR)
+    browser = TwineBrowser(debug_level = spynner.DEBUG)
     browser.set_html_parser(pyquery.PyQuery)
 
 def exit(code = "0"):
@@ -567,8 +567,14 @@ def formvalue(formname, fieldname, value):
         else:
             raise TwineAssertionError("no field matches \"%s\"" % fieldname)
 
-    if field.attr.type == "text":
+    if field.attr.type == "text" or field.attr.type == "password":
         browser.fill("input[name=%s]" % fieldname, value)
+    elif field.attr.type == "checkbox":
+        checked = _make_boolean(value)
+        if checked:
+            browser.check("input[name=%s]" % fieldname)
+        else:
+            browser.uncheck("input[name=%s]" % fieldname)
     else:
         raise TwineAssertionError("Not yet implemented")
 
