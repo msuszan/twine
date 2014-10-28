@@ -3,6 +3,8 @@
   <title>Submit Page</title>
 </head>
 <body>
-  <p>You said your name is {{ name }}</p>
+  <p>Your name is {{ form.name.data }}</p>
+  <p>Your password is {{ form.password.data }}</p>
+  <p>You {{ "accepted" if form.accept_tos.data else "rejected" }} the TOS</p>
 </body>
 </html>

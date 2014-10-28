@@ -3,12 +3,13 @@ from wtforms import Form, BooleanField, TextField, PasswordField, validators
 
 class ContrivedForm(Form):
     name = TextField('Name', [validators.Length(min=4, max=25)])
+    password = PasswordField('New Password')
     password = PasswordField('New Password', [
         validators.Required(),
         validators.EqualTo('confirm', message='Passwords must match')
     ])
     confirm = PasswordField('Repeat Password')
-    accept_tos = BooleanField('I accept the TOS', [validators.Required()])
+    accept_tos = BooleanField('I accept the TOS')
 
 test_server = Flask(__name__)
 
@@ -24,7 +25,7 @@ def link():
 def register():
   form = ContrivedForm(request.form)
   if request.method == 'POST' and form.validate():
-    return render_template('submit.html', name=form.name.data)
+    return render_template('submit.html', form=form)
   return render_template('form.html', form=form)
 
 if __name__ == "__main__":
