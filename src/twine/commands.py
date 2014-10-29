@@ -658,17 +658,24 @@ def extend_with(module_name):
 def getinput(prompt):
     """
     >> getinput <prompt>
+
     Get input, store it in '__input__'.
     """
-    raise TwineAssertionError("Not yet implemented")
+    local_dict = get_twill_glocals()[1]
+    inp = raw_input(prompt)
+    local_dict['__input__'] = inp
+    return inp
 
 def getpassword(prompt):
     """
     >> getpassword <prompt>
-    
+
     Get a password ("invisible input"), store it in '__password__'.
     """
-    raise TwineAssertionError("Not yet implemented")
+    local_dict = get_twill_glocals()[1]
+    inp = getpass.getpass(prompt)
+    local_dict['__password__'] = inp
+    return inp
 
 def save_cookies(filename):
     """
