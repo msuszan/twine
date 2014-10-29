@@ -546,10 +546,13 @@ def formvalue(formname, fieldname, value):
             raise TwineAssertionError("no matching forms!")
 
     try:
+        print fieldname
         fieldname = int(fieldname)
         fieldname -= 1
 
         all_fields = [ i for i in form.find("input").items() ]
+        all_fields.extend([ i for i in form.find("select").items() ])
+        all_fields.extend([ i for i in form.find("textarea").items() ])
 
         if len(all_fields) > fieldname:
             field = all_fields[fieldname]
@@ -557,26 +560,47 @@ def formvalue(formname, fieldname, value):
             raise TwineAssertionError("no field matches \"%d\"" % fieldname)
 
     except ValueError:
-        fields = [ i for i in form.find("input[name=%s]" % fieldname).items() ]
+        for field_tag in ("input", "select", "textarea"):
+            fields = [ i for i in form.find("%s[name=%s]" %
+                (field_tag, fieldname)).items() ]
 
-        if len(fields) > 1:
-            raise TwineAssertionError("multiple field matches")
+            if fields:
+                matched_field_tag = field_tag
+                break
+            #if len(fields) > 1:
+                #raise TwineAssertionError("multiple field matches")
 
-        if fields:
-            field = fields[0]
-        else:
-            raise TwineAssertionError("no field matches \"%s\"" % fieldname)
+            #if fields:
+                #field = fields[0]
+                #matched_field_tag = field_tag
+                #break
 
-    if field.attr.type == "text" or field.attr.type == "password":
-        browser.fill("input[name=%s]" % fieldname, value)
-    elif field.attr.type == "checkbox":
-        checked = _make_boolean(value)
-        if checked:
-            browser.check("input[name=%s]" % fieldname)
-        else:
-            browser.uncheck("input[name=%s]" % fieldname)
+    if not fields:
+        raise TwineAssertionError("no field matches \"%s\"" % fieldname)
+
+    field_type = fields[0].attr.type
+    if len(fields) > 1:
+        for field in fields:
+            if field.attr.type != field_type:
+                raise TwineAssertionError("field types do not match")
+
+    if matched_field_tag == "input":
+        if field_type == "text" or field_type == "password":
+            browser.fill("input[name=%s]" % fieldname, value)
+        elif field_type == "checkbox":
+            checked = _make_boolean(value)
+            if checked:
+                browser.check("input[name=%s]" % fieldname)
+            else:
+                browser.uncheck("input[name=%s]" % fieldname)
+        elif field_type == "radio":
+            browser.check("input[name=%s][value=%s]" % (fieldname, value,))
+    elif matched_field_tag == "select":
+        browser.select("option[value=%s]" % value)
+    elif matched_field_tag == "textarea":
+        browser.fill("textarea[name=%s]" % fieldname, value)
     else:
-        raise TwineAssertionError("Not yet implemented")
+        raise TwineAssertionError("Unknown field tag")
 
     # Keep track of last form modified
     browser.last_form = formname
