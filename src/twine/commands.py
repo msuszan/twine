@@ -488,7 +488,31 @@ def showhistory():
     print>>OUT, ''
 
     return history
-    
+
+def _find_form(formname):
+    try:
+        formname = int(formname)
+        formname -= 1
+
+        all_forms = [ i for i in browser.soup("form").items() ]
+
+        if len(all_forms) > formname:
+            form = all_forms[formname]
+        else:
+            raise TwineAssertionError("no matching forms!")
+
+    except ValueError:
+        forms = [ i for i in browser.soup("form[name='%s']" % formname).items() ]
+
+        if len(forms) > 1:
+            raise TwineAssertionError("multiple form matches")
+        if forms:
+            form = forms[0]
+        else:
+            raise TwineAssertionError("no matching forms!")
+
+    return form
+
 def formclear(formname):
     """
     >> formclear <formname>
@@ -523,30 +547,9 @@ def formvalue(formname, fieldname, value):
 
     'formvalue' is available as 'fv' as well.
     """
-    try:
-        formname = int(formname)
-        formname -= 1
-
-        all_forms = [ i for i in browser.soup("form").items() ]
-
-        if len(all_forms) > formname:
-            form = all_forms[formname]
-        else:
-            raise TwineAssertionError("no matching forms!")
-
-    except ValueError:
-        forms = [ i for i in browser.soup("form[name='%s']" % formname).items() ]
-
-        if len(forms) > 1:
-            raise TwineAssertionError("multiple form matches")
-        
-        if forms:
-            form = forms[0]
-        else:
-            raise TwineAssertionError("no matching forms!")
+    form = _find_form(formname)
 
     try:
-        print fieldname
         fieldname = int(fieldname)
         fieldname -= 1
 
@@ -613,7 +616,26 @@ def formaction(formname, action):
 
     Sets action parameter on form to action_url
     """
-    raise TwineAssertionError("Not yet implemented")
+    form = _find_form(formname)
+    if form.attr.name:
+        browser.runjs("$('form[name=%s]').attr('action', '%s');" %
+            (form.attr.name, action))
+    try:
+        formname = int(formname)
+        formname -= 1
+
+        all_forms = [ i for i in browser.soup("form").items() ]
+
+        if len(all_forms) > formname:
+            form = all_forms[formname]
+        else:
+            raise TwineAssertionError("no matching forms!")
+
+        browser.runjs("$('form')[%s].attr('action', '%s');" %
+            (str(formname), action))
+
+    except ValueError:
+        raise TwineAssertionError("no matching forms!")
 
 fa = formaction
 
