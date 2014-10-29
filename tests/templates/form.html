@@ -4,7 +4,7 @@
 </head>
 <body>
   {% from "_formhelpers.html" import render_field %}
-  <form method=post action="/form">
+  <form method=post name="contrivedform" action="/form">
     <dl>
       {{ render_field(form.name) }}
       {{ render_field(form.password) }}

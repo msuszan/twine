@@ -36,8 +36,10 @@ def index():
 def link():
   return render_template("link.html")
 
-@test_server.route('/form', methods=['GET', 'POST'])
-def register():
+# alternate_form route used for testing formaction
+@test_server.route('/form', methods=['GET', 'POST'], endpoint="form")
+@test_server.route('/alternate_form', methods=['GET', 'POST'])
+def form_route():
   form = ContrivedForm(request.form)
   if request.method == 'POST' and form.validate():
     return render_template('submit.html', form=form)
