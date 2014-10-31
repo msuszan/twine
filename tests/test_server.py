@@ -4,16 +4,15 @@ from wtforms import TextField, PasswordField, BooleanField, RadioField
 from wtforms import SelectField, TextAreaField
 
 class ContrivedForm(Form):
-    name = TextField('Name', [validators.Length(min=4, max=25)])
+    name = TextField('Name')
 
-    password = PasswordField('New Password', [
-        validators.Required(),
-        validators.EqualTo('confirm', message='Passwords must match')
-    ])
+    password = PasswordField('New Password')#, [
+        #validators.EqualTo('confirm', message='Passwords must match')
+    #])
     confirm = PasswordField('Repeat Password')
 
     gender = RadioField('Gender', choices=[('male','Male'),
-        ('female','Female')])
+        ('female','Female')], default='male')
 
     language_choices = [
         ('cpp', 'C++'),

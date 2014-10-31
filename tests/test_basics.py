@@ -13,6 +13,7 @@ class TestBasics:
         go('http://127.0.0.1:5000/')
     def tearDown(self):
         self.output.close()
+        set_output(None)
     def test_reload(self):
         reload()
     def test_url(self):
