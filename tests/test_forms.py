@@ -27,3 +27,9 @@ class TestFormValue:
         formvalue('1', 'comments', 'examplecomment')
         submit()
         find('examplecomment')
+    def test_formaction(self):
+        formaction('1', '/alternate_form')
+        formvalue('1', 'name', 'examplename')
+        submit()
+        find('examplename')
+        url('alternate_form')
