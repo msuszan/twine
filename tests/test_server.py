@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, make_response
 from wtforms import Form, validators
 from wtforms import TextField, PasswordField, BooleanField, RadioField
 from wtforms import SelectField, TextAreaField
@@ -43,6 +43,12 @@ def form_route():
   if request.method == 'POST' and form.validate():
     return render_template('submit.html', form=form)
   return render_template('form.html', form=form)
+
+@test_server.route('/cookie')
+def cookie():
+  resp = make_response(render_template('cookie.html'))
+  resp.set_cookie('examplecookie', 'examplevalue')
+  return resp
 
 if __name__ == "__main__":
     test_server.run(debug = True)
