@@ -1,0 +1,22 @@
+language: python
+python:
+  - "2.6"
+  - "2.7"
+before_install:
+  - curl -O http://iweb.dl.sourceforge.net/project/pyqt/sip/sip-4.16.4/sip-4.16.4.tar.gz
+  - tar -xvf sip-4.16.4.tar.gz
+  - cd sip-4.16.4
+  - python configure.py
+  - make -j 4
+  - sudo make install
+  - cd ..
+  - curl -O http://softlayer-dal.dl.sourceforge.net/project/pyqt/PyQt4/PyQt-4.11.2/PyQt-x11-gpl-4.11.2.tar.gz
+  - tar -xvf PyQt-x11-gpl-4.11.2.tar.gz
+  - cd PyQt-x11-gpl-4.11.2
+  - python configure.py --confirm-license --qmake /usr/bin/qmake-qt4
+  - make -j 4
+  - sudo make install
+  - cd ..
+install:
+  - pip install -r requirements.txt
+script: nosetests
