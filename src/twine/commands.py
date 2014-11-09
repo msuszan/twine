@@ -78,7 +78,7 @@ import spynner
 import pyquery
 import urlparse
 
-browser = TwineBrowser(debug_level = spynner.DEBUG)
+browser = TwineBrowser(debug_level = spynner.ERROR)
 browser.set_html_parser(pyquery.PyQuery)
 
 def get_browser():
@@ -92,7 +92,7 @@ def reset_browser():
     """
     global browser
 
-    browser = TwineBrowser(debug_level = spynner.DEBUG)
+    browser = TwineBrowser(debug_level = spynner.ERROR)
     browser.set_html_parser(pyquery.PyQuery)
 
 def exit(code = "0"):
@@ -618,7 +618,7 @@ def formaction(formname, action):
     """
     form = _find_form(formname)
     if form.attr.name:
-        browser.runjs("$('form[name=%s]').attr('action', '%s');" %
+        browser.run_javascript("$('form[name=%s]').attr('action', '%s');" %
             (form.attr.name, action))
     try:
         formname = int(formname)
@@ -631,7 +631,7 @@ def formaction(formname, action):
         else:
             raise TwineAssertionError("no matching forms!")
 
-        browser.runjs("$('form')[%s].attr('action', '%s');" %
+        browser.run_javascript("$('form')[%s].attr('action', '%s');" %
             (str(formname), action))
 
     except ValueError:
@@ -1033,7 +1033,7 @@ def run_javascript(code):
 
     Runs JavaScript code.
     """
-    browser.runjs(code)
+    browser.run_javascript(code)
 
 def save_screenshot(filename):
     """

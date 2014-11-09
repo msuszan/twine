@@ -140,6 +140,15 @@ class TwineBrowser(Browser):
 
         self._content_types[self._reply_url] = content_type
 
+    def _javascript_console_message(self, message, line, sourceid):
+        self.javascript_message = message
+        super(TwineBrowser, self)._javascript_console_message(message, line,
+                                                              sourceid)
+
+    def run_javascript(jscode):
+        self.runjs(jscode)
+        return self.javascript_message
+
     def back(self):
         if self._history:
             last_page = self._history.pop()
