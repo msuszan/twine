@@ -5,6 +5,7 @@ python:
 before_install:
   - sudo apt-get update
 install:
+  - pip install -r requirements.txt
   - sudo apt-get install libx11-dev libxtst-dev
   - curl -O http://iweb.dl.sourceforge.net/project/pyqt/sip/sip-4.16.4/sip-4.16.4.tar.gz
   - tar -xvf sip-4.16.4.tar.gz
@@ -20,7 +21,6 @@ install:
   - make -j 4
   - sudo make install
   - cd ..
-  - pip install -r requirements.txt
 before_script:
   - cd tests
   - python test_server.py &
