@@ -2,3 +2,5 @@ lxml
 cssselect
 pyparsing
 spynner
+flask
+wtforms
