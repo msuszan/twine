@@ -619,7 +619,7 @@ def formaction(formname, action):
     form = _find_form(formname)
     if form.attr.name:
         browser.run_javascript("$('form[name=%s]').attr('action', '%s');" %
-            (form.attr.name, action))
+            (form.attr.name, action,))
     try:
         formname = int(formname)
         formname -= 1
@@ -632,7 +632,7 @@ def formaction(formname, action):
             raise TwineAssertionError("no matching forms!")
 
         browser.run_javascript("$('form')[%s].attr('action', '%s');" %
-            (str(formname), action))
+            (str(formname), action,))
 
     except ValueError:
         raise TwineAssertionError("no matching forms!")
