@@ -21,7 +21,7 @@ install:
   - make -j 4
   - sudo make install
   - cd ..
-  - sudo python setup.py install
+  - python setup.py install
 before_script:
   - cd tests
   - python test_server.py &
