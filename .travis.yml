@@ -1,11 +1,11 @@
 language: python
 python:
-  - "2.6"
   - "2.7"
 before_install:
   - sudo apt-get update
 install:
-  - sudo apt-get install libx11-dev libxtst-dev
+  - sudo apt-get install libx11-dev libxtst-dev xvfb
+  - pip install -r requirements.txt
   - curl -O http://iweb.dl.sourceforge.net/project/pyqt/sip/sip-4.16.4/sip-4.16.4.tar.gz
   - tar -xvf sip-4.16.4.tar.gz
   - cd sip-4.16.4
@@ -20,8 +20,8 @@ install:
   - make -j 4
   - sudo make install
   - cd ..
-  - sudo pip install -r requirements.txt
+  - python setup.py install
 before_script:
   - cd tests
   - python test_server.py &
-script: nosetests
+script: ../xvfb-run nosetests
