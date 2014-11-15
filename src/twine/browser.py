@@ -145,7 +145,8 @@ class TwineBrowser(Browser):
         super(TwineBrowser, self)._javascript_console_message(message, line,
                                                               sourceid)
 
-    def run_javascript(jscode):
+    def run_javascript(self, jscode):
+        self.javascript_message = ""
         self.runjs(jscode)
         return self.javascript_message
 
