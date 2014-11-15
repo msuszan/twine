@@ -1,4 +1,5 @@
 # twine
+[![Build Status](https://travis-ci.org/joshuacurl/twine.svg?branch=master)](https://travis-ci.org/joshuacurl/twine)
 
 twine is an implementation of the [twill](https://github.com/ctb/twill) scripting language using
 [spynner](https://github.com/makinacorpus/spynner). This will allow
