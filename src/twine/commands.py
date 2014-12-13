@@ -480,7 +480,11 @@ def showhistory():
     history = browser.history
 
     print>>OUT, ''
-    print>>OUT, 'History: (%d pages total) ' % (len(history))
+    if browser.url == '':
+        print>>OUT, 'History: (%d pages total) ' % (len(history))
+    else:
+        print>>OUT, 'History: (%d pages total) ' % (len(history) + 1)
+
 
     for n, page in enumerate(history):
         print>>OUT, "\t%d. %s" % (n + 1, page)
