@@ -1035,7 +1035,9 @@ def run_javascript(code):
 
     Runs JavaScript code.
     """
-    browser.run_javascript(code)
+    output = browser.run_javascript(code)
+    if output:
+        print "Javascript console:", output
 
 def save_screenshot(filename):
     """
