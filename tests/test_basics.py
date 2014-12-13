@@ -50,3 +50,33 @@ class TestBasics:
         assert '200' in self.output.getvalue()
         assert 'text/html' in self.output.getvalue()
         assert 'Index' in self.output.getvalue()
+    def test_showlinks(self):
+        showlinks()
+        assert 'Link ==> link' in self.output.getvalue()
+
+class TestShowHistory:
+    def setUp(self):
+        self.output = StringIO()
+        set_output(self.output)
+
+        fp = TemporaryFile('rw')
+    def tearDown(self):
+        self.output.close()
+        set_output(None)
+
+        reset_browser()
+    def test_showhistory(self):
+        # Empty history
+        showhistory()
+        assert 'History: (0 pages total)' in self.output.getvalue()
+
+        # One page in history
+        go('http://127.0.0.1:5000/')
+        showhistory()
+        assert 'History: (1 pages total)' in self.output.getvalue()
+
+        # Two pages in history
+        go('http://127.0.0.1:5000/link')
+        showhistory()
+        assert 'History: (2 pages total)' in self.output.getvalue()
+        assert '1. http://127.0.0.1:5000/' in self.output.getvalue()
