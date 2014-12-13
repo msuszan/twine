@@ -53,6 +53,10 @@ class TwineBrowser(Browser):
     def title(self):
         return self._title
 
+    @property
+    def history(self):
+        return self._history
+
     def add_header(self, header):
         self.headers.append(header)
 
