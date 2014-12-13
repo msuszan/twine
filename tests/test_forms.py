@@ -6,6 +6,8 @@ from tempfile import TemporaryFile
 class TestFormValue:
     def setUp(self):
         go('http://127.0.0.1:5000/form')
+    def tearDown(self):
+        reset_browser()
     def test_text_field(self):
         formvalue('1', 'name', 'examplename')
         submit()

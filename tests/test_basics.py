@@ -14,6 +14,8 @@ class TestBasics:
     def tearDown(self):
         self.output.close()
         set_output(None)
+
+        reset_browser()
     def test_reload(self):
         reload()
     def test_url(self):

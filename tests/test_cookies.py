@@ -10,6 +10,8 @@ class TestCookies:
     def tearDown(self):
         self.output.close()
         set_output(None)
+
+        reset_browser()
     def test_show_cookies(self):
         go('http://127.0.0.1:5000/cookie')
         show_cookies()
