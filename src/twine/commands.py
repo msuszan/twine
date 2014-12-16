@@ -70,7 +70,7 @@ import re, getpass, time
 
 from errors import TwineException, TwineAssertionError
 import utils
-from utils import set_form_control_value, run_tidy
+from utils import make_boolean, set_form_control_value, run_tidy
 from namespaces import get_twine_glocals
 
 from browser import TwineBrowser
@@ -801,53 +801,6 @@ def clear_extra_headers():
     """
     browser.reset_headers()
 
-def _make_boolean(value):
-    """
-    Convert the input value into a boolean like so:
-    
-    >> make_boolean('true')
-    True
-    >> make_boolean('false')
-    False
-    >> make_boolean('1')
-    True
-    >> make_boolean('0')
-    False
-    >> make_boolean('+')
-    True
-    >> make_boolean('-')
-    False
-    """
-    value = str(value)
-    value = value.lower().strip()
-
-    # true/false
-    if value in ('true', 'false'):
-        if value == 'true':
-            return True
-        return False
-
-    # 0/nonzero
-    try:
-        ival = int(value)
-        return bool(ival)
-    except ValueError:
-        pass
-
-    # +/-
-    if value in ('+', '-'):
-        if value == '+':
-            return True
-        return False
-
-    # on/off
-    if value in ('on', 'off'):
-        if value == 'on':
-            return True
-        return False
-
-    raise TwineException("unable to convert '%s' into true/false" % (value,))
-
 _orig_options = dict(readonly_controls_writeable=False,
                      use_tidy=True,
                      require_tidy=False,
@@ -899,7 +852,7 @@ def config(key=None, value=None):
             print>>OUT, 'key %s: value %s' % (key, v)
             print>>OUT, ''
         else:
-            value = _make_boolean(value)
+            value = make_boolean(value)
             _options[key] = value
 
 def info():
