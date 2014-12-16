@@ -499,7 +499,7 @@ def formclear(formname):
     
     Run 'clear' on all of the controls in this form.
     """
-    raise TwineAssertionError("Not yet implemented")
+    browser.formclear(formname)
 
 def formvalue(formname, fieldname, value):
     """
