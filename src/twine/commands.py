@@ -457,9 +457,21 @@ def showforms():
 
                 # Print form value, or options
                 if names:
+                    # TODO: use javascript for select forms
                     print>>OUT, _trunc("%s of %s" % (values, names,), 40)
                 else:
-                    print>>OUT, _trunc(field.attr("value"), 40)
+                    if field.attr.type == "submit":
+                        print>>OUT, _trunc(field.attr.value, 40)
+                    elif field.attr.type == "textarea":
+                        # FIX: textarea names aren't necessarily unique
+                        selector = "textarea[name=%s]" % field.attr.name
+                        jsc = "console.log($('%s').val())" % selector
+                        print>>OUT, browser.run_javascript(jsc)
+                    else:
+                        # FIX: input names aren't necessarily unique
+                        selector = "input[name=%s]" % field.attr.name
+                        jsc = "console.log($('%s').val())" % selector
+                        print>>OUT, browser.run_javascript(jsc)
 
 def showlinks():
     """
