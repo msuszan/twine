@@ -1,4 +1,5 @@
 from spynner import *
+from utils import make_boolean
 
 class TwineBrowser(Browser):
     def __init__(self, debug_level):
@@ -10,6 +11,9 @@ class TwineBrowser(Browser):
         self._title = ""
 
         self._history = []
+
+        # Keep track of old form values so they can be restored on formclear
+        self._previous_form_values = {}
 
         # Last form modified by user
         # Used for default submit command
@@ -187,6 +191,11 @@ class TwineBrowser(Browser):
 
         return form
 
+    def add_previous_form_value(self, formname, fieldname, value):
+        if formname not in self._previous_form_values:
+            self._previous_form_values[formname] = {}
+        self._previous_form_values[formname][fieldname] = value
+
     def formvalue(self, formname, fieldname, value):
         form = self.find_form(formname)
 
@@ -228,20 +237,31 @@ class TwineBrowser(Browser):
                 if field.attr.type != field_type:
                     raise TwineAssertionError("field types do not match")
 
+        field = fields[0]
+
         if matched_field_tag == "input":
             if field_type == "text" or field_type == "password":
+                self.add_previous_form_value(formname, fieldname,
+                                             field.attr.value or "")
                 self.fill("input[name=%s]" % fieldname, value)
             elif field_type == "checkbox":
-                checked = _make_boolean(value)
+                self.add_previous_form_value(formname, fieldname,
+                                             field.attr.checked or False)
+                checked = make_boolean(value)
                 if checked:
                     self.check("input[name=%s]" % fieldname)
                 else:
                     self.uncheck("input[name=%s]" % fieldname)
             elif field_type == "radio":
+                self.add_previous_form_value(formname, fieldname,
+                                             field.attr.value)
                 self.check("input[name=%s][value=%s]" % (fieldname, value,))
         elif matched_field_tag == "select":
+            # TODO: add to previous form values
             self.select("option[value=%s]" % value)
         elif matched_field_tag == "textarea":
+            self.add_previous_form_value(formname, fieldname,
+                                         field.attr.value or "")
             self.fill("textarea[name=%s]" % fieldname, value)
         else:
             raise TwineAssertionError("Unknown field tag")
