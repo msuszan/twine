@@ -162,3 +162,27 @@ class TwineBrowser(Browser):
         else:
             self.load("")
             return False
+
+    def find_form(self, formname):
+        try:
+            formname = int(formname)
+            formname -= 1
+
+            all_forms = [ i for i in self.soup("form").items() ]
+
+            if len(all_forms) > formname:
+                form = all_forms[formname]
+            else:
+                raise TwineAssertionError("no matching forms!")
+
+        except ValueError:
+            forms = [ i for i in self.soup("form[name='%s']" % formname).items() ]
+
+            if len(forms) > 1:
+                raise TwineAssertionError("multiple form matches")
+            if forms:
+                form = forms[0]
+            else:
+                raise TwineAssertionError("no matching forms!")
+
+        return form

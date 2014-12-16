@@ -493,30 +493,6 @@ def showhistory():
 
     return history
 
-def _find_form(formname):
-    try:
-        formname = int(formname)
-        formname -= 1
-
-        all_forms = [ i for i in browser.soup("form").items() ]
-
-        if len(all_forms) > formname:
-            form = all_forms[formname]
-        else:
-            raise TwineAssertionError("no matching forms!")
-
-    except ValueError:
-        forms = [ i for i in browser.soup("form[name='%s']" % formname).items() ]
-
-        if len(forms) > 1:
-            raise TwineAssertionError("multiple form matches")
-        if forms:
-            form = forms[0]
-        else:
-            raise TwineAssertionError("no matching forms!")
-
-    return form
-
 def formclear(formname):
     """
     >> formclear <formname>
@@ -551,7 +527,7 @@ def formvalue(formname, fieldname, value):
 
     'formvalue' is available as 'fv' as well.
     """
-    form = _find_form(formname)
+    form = browser.find_form(formname)
 
     try:
         fieldname = int(fieldname)
@@ -620,7 +596,7 @@ def formaction(formname, action):
 
     Sets action parameter on form to action_url
     """
-    form = _find_form(formname)
+    form = browser.find_form(formname)
     if form.attr.name:
         jscode = "$('form[name=%s]').attr('action', '%s');" % (form.attr.name,
                                                                action,)
