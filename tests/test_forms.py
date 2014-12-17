@@ -28,6 +28,14 @@ class TestFormValue:
         formvalue('1', 'comments', 'examplecomment')
         submit()
         find('You had the following comments: examplecomment')
+    def test_checked_checkbox_field(self):
+        formvalue('1', 'accept_tos', 'true')
+        submit()
+        find('You accepted the TOS')
+    def test_unchecked_checkbox_field(self):
+        formvalue('1', 'accept_tos', 'false')
+        submit()
+        find('You rejected the TOS')
     def test_formaction(self):
         formaction('1', '/alternate_form')
         formvalue('1', 'name', 'examplename')
