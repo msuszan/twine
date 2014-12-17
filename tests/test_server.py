@@ -4,12 +4,9 @@ from wtforms import TextField, PasswordField, BooleanField, RadioField
 from wtforms import SelectField, TextAreaField
 
 class ContrivedForm(Form):
-    name = TextField('Name')
+    name = TextField('Name', [validators.Optional()])
 
-    password = PasswordField('New Password')#, [
-        #validators.EqualTo('confirm', message='Passwords must match')
-    #])
-    confirm = PasswordField('Repeat Password')
+    password = PasswordField('Password', [validators.Optional()])
 
     gender = RadioField('Gender', choices=[('male','Male'),
         ('female','Female')], default='male')
@@ -21,7 +18,7 @@ class ContrivedForm(Form):
     ]
     language = SelectField('Programming Language', choices=language_choices)
 
-    comments = TextAreaField()
+    comments = TextAreaField('Comments', [validators.Optional()])
 
     accept_tos = BooleanField('I accept the TOS')
 

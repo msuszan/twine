@@ -1,4 +1,5 @@
 from spynner import *
+from errors import TwineException, TwineAssertionError
 from utils import make_boolean
 
 class TwineBrowser(Browser):
