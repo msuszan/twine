@@ -48,7 +48,7 @@ class TestFormValue:
         submit()
         find('Your name is examplename')
         url('alternate_form')
-    def test_basic_showforms(self):
+    def test_showforms_basic(self):
         showforms()
         assert 'name' in self.output.getvalue()
         assert 'password' in self.output.getvalue()
@@ -57,3 +57,11 @@ class TestFormValue:
         assert 'comments' in self.output.getvalue()
         assert 'accept_tos' in self.output.getvalue()
         assert 'submit' in self.output.getvalue()
+    def test_showforms_text_field(self):
+        formvalue('1', 'name', 'examplename')
+        showforms()
+        assert 'examplename' in self.output.getvalue()
+    def test_showforms_password_field(self):
+        formvalue('1', 'password', 'examplepassword')
+        showforms()
+        assert 'examplepassword' in self.output.getvalue()
