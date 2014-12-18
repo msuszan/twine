@@ -430,9 +430,18 @@ def showforms():
         if fields:
             print>>OUT, "## ## __Name__________________ __Type___ __ID________ __Value__________________"
 
+            submit_number = 1
             for j, field in enumerate(fields):
-                # Print form number
-                print>>OUT, ("%-5s" % (j + 1,)),
+                if field.attr.type == "submit":
+                    # Print form number
+                    print>>OUT, ("%-2s" % (j + 1,)),
+
+                    # If submit, print submit number
+                    print>>OUT, ("%-2s" % submit_number),
+                    submit_number += 1
+                else:
+                    # Print form number
+                    print>>OUT, ("%-5s" % (j + 1,)),
 
                 # Print form name
                 print>>OUT, ("%-23s " % (_trunc(field.attr("name"), 23),)),
