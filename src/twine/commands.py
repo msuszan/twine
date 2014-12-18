@@ -564,7 +564,7 @@ def formaction(formname, action):
 
     Sets action parameter on form to action_url
     """
-    form = browser.find_form(formname)
+    form, form_number = browser.find_form(formname)
     if form.attr.name:
         jscode = "$('form[name=%s]').attr('action', '%s');" % (form.attr.name,
                                                                action,)

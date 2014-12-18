@@ -172,27 +172,34 @@ class TwineBrowser(Browser):
 
     def find_form(self, formname):
         try:
-            formname = int(formname)
-            formname -= 1
+            form_number = int(formname)
+            form_number -= 1
 
             all_forms = [ i for i in self.soup("form").items() ]
 
-            if len(all_forms) > formname:
-                form = all_forms[formname]
+            if len(all_forms) > form_number:
+                form = all_forms[form_number]
             else:
                 raise TwineAssertionError("no matching forms!")
 
         except ValueError:
-            forms = [ i for i in self.soup("form[name='%s']" % formname).items() ]
+            all_forms = [ i for i in self.soup("form").items() ]
 
-            if len(forms) > 1:
+            form_matches = []
+
+            for i, form in enumerate(all_forms):
+                if form.attr.name == formname:
+                    form_matches.append(form)
+                    form_number = i
+
+            if len(form_matches) > 1:
                 raise TwineAssertionError("multiple form matches")
-            if forms:
-                form = forms[0]
+            if form_matches:
+                form = form_matches[0]
             else:
                 raise TwineAssertionError("no matching forms!")
 
-        return form
+        return (form, form_number)
 
     def add_previous_form_value(self, formname, fieldname, value):
         if formname not in self._previous_form_values:
@@ -200,7 +207,7 @@ class TwineBrowser(Browser):
         self._previous_form_values[formname][fieldname] = value
 
     def _formvalue(self, formname, fieldname, value, track_previous_value):
-        form = self.find_form(formname)
+        form, form_number = self.find_form(formname)
 
         try:
             fieldname = int(fieldname)
