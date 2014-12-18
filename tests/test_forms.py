@@ -5,8 +5,14 @@ from tempfile import TemporaryFile
 
 class TestFormValue:
     def setUp(self):
+        self.output = StringIO()
+        set_output(self.output)
+
         go('http://127.0.0.1:5000/form')
     def tearDown(self):
+        self.output.close()
+        set_output(None)
+
         reset_browser()
     def test_text_field(self):
         formvalue('1', 'name', 'examplename')
@@ -40,5 +46,14 @@ class TestFormValue:
         formaction('1', '/alternate_form')
         formvalue('1', 'name', 'examplename')
         submit()
-        find('examplename')
+        find('Your name is examplename')
         url('alternate_form')
+    def test_basic_showforms(self):
+        showforms()
+        assert 'name' in self.output.getvalue()
+        assert 'password' in self.output.getvalue()
+        assert 'gender' in self.output.getvalue()
+        assert 'language' in self.output.getvalue()
+        assert 'comments' in self.output.getvalue()
+        assert 'accept_tos' in self.output.getvalue()
+        assert 'submit' in self.output.getvalue()

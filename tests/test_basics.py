@@ -8,8 +8,6 @@ class TestBasics:
         self.output = StringIO()
         set_output(self.output)
 
-        fp = TemporaryFile('rw')
-
         go('http://127.0.0.1:5000/')
     def tearDown(self):
         self.output.close()
