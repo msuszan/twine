@@ -464,13 +464,16 @@ def showforms():
                 # Print form value, or options
                 if field.is_("select"):
                     options = field.find("option").items()
-                    option_names = [ o.attr.name or o.text()
-                                     for o in field.find("option").items() ]
-                    values = [ o.attr.value
-                               for o in field.find("option").items() ]
+                    option_values = [ o.attr.value
+                                      for o in field.find("option").items() ]
 
-                    # TODO: use javascript for select forms
-                    print>>OUT, _trunc("%s of %s" % (values, option_names,), 40)
+                    # FIX: select names aren't necessarily unique
+                    selector = "select[name=%s]" % field.attr.name
+                    jsc = "console.log($('%s').val())" % selector
+                    selected_option = browser.run_javascript(jsc)
+
+                    value = "['%s'] of %s" % (selected_option, option_values,)
+                    print>>OUT, _trunc(value, 40)
                 else:
                     if field.attr.type == "submit":
                         print>>OUT, _trunc(field.attr.value, 40)
