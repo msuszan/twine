@@ -417,8 +417,8 @@ def showforms():
     Show all of the forms on the current page.
     """
     for i, form in enumerate(browser.soup("form").items()):
-        if form.attr("name"):
-            print>>OUT, "Form name=%s (#%d)" % (form.attr("name"), i + 1,)
+        if form.attr.name:
+            print>>OUT, "Form name=%s (#%d)" % (form.attr.name, i + 1,)
         else:
             print>>OUT, "Form #%d" % (i + 1,)
 
@@ -444,12 +444,12 @@ def showforms():
                     print>>OUT, ("%-5s" % (j + 1,)),
 
                 # Print form name
-                print>>OUT, ("%-23s " % (_trunc(field.attr("name"), 23),)),
+                print>>OUT, ("%-23s " % (_trunc(field.attr.name, 23),)),
 
                 # Print form type
                 if field.is_("input"):
-                    if field.attr("type"):
-                        print>>OUT, ("%-9s" % (_trunc(field.attr("type"), 9))),
+                    if field.attr.type:
+                        print>>OUT, ("%-9s" % (_trunc(field.attr.type, 9))),
                     else:
                         print>>OUT, ("%-9s" % "text"),
                 elif field.is_("textarea"):
@@ -458,16 +458,19 @@ def showforms():
                     print>>OUT, ("%-9s" % "select"),
 
                 # Print form ID
-                print>>OUT, ("%-12s" % (_trunc(field.attr("id") or "(None)", 12),)),
-
-                options = field.find("option").items()
-                names = [ o.attr("name") or o.text() for o in field.find("option").items() ]
-                values = [ o.attr("value") for o in field.find("option").items() ]
+                form_id = _trunc(field.attr.id, 12) or "(None)"
+                print>>OUT, ("%-12s" % form_id),
 
                 # Print form value, or options
-                if names:
+                if field.is_("select"):
+                    options = field.find("option").items()
+                    option_names = [ o.attr.name or o.text()
+                                     for o in field.find("option").items() ]
+                    values = [ o.attr.value
+                               for o in field.find("option").items() ]
+
                     # TODO: use javascript for select forms
-                    print>>OUT, _trunc("%s of %s" % (values, names,), 40)
+                    print>>OUT, _trunc("%s of %s" % (values, option_names,), 40)
                 else:
                     if field.attr.type == "submit":
                         print>>OUT, _trunc(field.attr.value, 40)
@@ -489,7 +492,7 @@ def showlinks():
     Show all of the links on the current page.
     """
     for n, link in enumerate(browser.soup("a").items()):
-        print>>OUT, "%d. %s ==> %s" % (n, link.text(), link.attr("href"),)
+        print>>OUT, "%d. %s ==> %s" % (n, link.text(), link.attr.href,)
     print>>OUT, ''
 
 def showhistory():
