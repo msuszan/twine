@@ -201,10 +201,10 @@ class TwineBrowser(Browser):
 
         return (form, form_number)
 
-    def add_previous_form_value(self, formname, fieldname, value):
-        if formname not in self._previous_form_values:
-            self._previous_form_values[formname] = {}
-        self._previous_form_values[formname][fieldname] = value
+    def add_previous_form_value(self, form_number, fieldname, value):
+        if form_number not in self._previous_form_values:
+            self._previous_form_values[form_number] = {}
+        self._previous_form_values[form_number][fieldname] = value
 
     def _formvalue(self, formname, fieldname, value, track_previous_value):
         form, form_number = self.find_form(formname)
@@ -252,7 +252,7 @@ class TwineBrowser(Browser):
         if matched_field_tag == "input":
             if field_type == "text" or field_type == "password":
                 if track_previous_value:
-                    self.add_previous_form_value(formname, fieldname,
+                    self.add_previous_form_value(form_number, fieldname,
                                                  field.attr.value or "")
                 self.fill("input[name=%s]" % fieldname, value)
             elif field_type == "checkbox":
@@ -287,7 +287,10 @@ class TwineBrowser(Browser):
         self._formvalue(formname, fieldname, value, True)
 
     def formclear(self, formname):
-        for fieldname in self._previous_form_values[formname]:
-            self._formvalue(formname, fieldname,
-                            self._previous_form_values[formname][fieldname],
-                            False)
+        form, form_number = self.find_form(formname)
+        if form_number not in self._previous_form_values:
+            return
+
+        for fieldname in self._previous_form_values[form_number]:
+            previous_value = self._previous_form_values[form_number][fieldname]
+            self._formvalue(formname, fieldname, previous_value, False)
