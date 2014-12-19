@@ -359,28 +359,7 @@ def submit(submit_button=None):
         raise TwineAssertionError("No default submit available")
 
     formname = browser.last_form
-
-    try:
-        formname = int(formname)
-        formname -= 1
-
-        all_forms = [ i for i in browser.soup("form").items() ]
-
-        if len(all_forms) > formname:
-            form = all_forms[formname]
-        else:
-            raise TwineAssertionError("no matching forms!")
-
-    except ValueError:
-        forms = [ i for i in browser.soup("form[name='%s']" % formname).items() ]
-
-        if len(forms) > 1:
-            raise TwineAssertionError("multiple form matches")
-
-        if forms:
-            form = forms[0]
-        else:
-            raise TwineAssertionError("no matching forms!")
+    form, form_number = browser.find_form(browser.last_form)
 
     submits = [ i for i in form.find("input[type=submit]").items() ]
 
