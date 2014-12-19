@@ -365,8 +365,6 @@ def submit(submit_button=None):
 
     if not submits:
         raise TwineAssertionError("form has no submit button")
-    if len(submits) > 1:
-        raise TwineAssertionError("more than one submit button")
 
     button = submits[0]
 
