@@ -451,14 +451,14 @@ def showforms():
 
                     value = "['%s'] of %s" % (selected_option, option_values,)
                     print>>OUT, _trunc(value, 40)
+                elif field.is_("textarea"):
+                    # FIX: textarea names aren't necessarily unique
+                    selector = "textarea[name=%s]" % field.attr.name
+                    jsc = "console.log($('%s').val())" % selector
+                    print>>OUT, browser.run_javascript(jsc)
                 else:
                     if field.attr.type == "submit":
                         print>>OUT, _trunc(field.attr.value, 40)
-                    elif field.attr.type == "textarea":
-                        # FIX: textarea names aren't necessarily unique
-                        selector = "textarea[name=%s]" % field.attr.name
-                        jsc = "console.log($('%s').val())" % selector
-                        print>>OUT, browser.run_javascript(jsc)
                     else:
                         # FIX: input names aren't necessarily unique
                         selector = "input[name=%s]" % field.attr.name
