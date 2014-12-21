@@ -48,6 +48,18 @@ class TestFormValue:
         submit()
         find('Your name is examplename')
         url('alternate_form')
+
+class TestShowForms:
+    def setUp(self):
+        self.output = StringIO()
+        set_output(self.output)
+
+        go('http://127.0.0.1:5000/form')
+    def tearDown(self):
+        self.output.close()
+        set_output(None)
+
+        reset_browser()
     def test_showforms_basic(self):
         showforms()
         assert 'name' in self.output.getvalue()
