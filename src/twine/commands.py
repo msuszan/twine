@@ -488,6 +488,15 @@ def showforms():
                         print>>OUT, _trunc(value, 40)
 
                         del radio_fields[field.attr.name]
+                    elif field.attr.type == "checkbox":
+                        selector = "input[name=%s]" % field.attr.name
+                        jsc = "console.log($('%s').attr('checked'))" % selector
+                        checked_status = browser.run_javascript(jsc)
+                        if checked_status == "true":
+                            print>>OUT, "checked"
+                        else:
+                            print>>OUT, "unchecked"
+
                     else:
                         # FIX: input names aren't necessarily unique
                         selector = "input[name=%s]" % field.attr.name
