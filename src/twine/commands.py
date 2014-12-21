@@ -394,6 +394,18 @@ def showforms():
     Show all of the forms on the current page.
     """
     for i, form in enumerate(browser.soup("form").items()):
+        # Group radio fields
+        radio_options = [ f for f in form.find("input").items()
+                          if f.attr.type == "radio" ]
+
+        radio_fields = {}
+        for radio_option in radio_options:
+            name = radio_option.attr.name
+            if name in radio_fields:
+                radio_fields[name].append(radio_option.attr.value)
+            else:
+                radio_fields[name] = [radio_option.attr.value]
+
         if form.attr.name:
             print>>OUT, "Form name=%s (#%d)" % (form.attr.name, i + 1,)
         else:
@@ -409,6 +421,11 @@ def showforms():
 
             submit_number = 1
             for j, field in enumerate(fields):
+                # Skip this field if it's part of a radio group already printed
+                if field.attr.type == "radio" and \
+                   field.attr.name not in radio_fields:
+                       continue
+
                 if field.attr.type == "submit":
                     # Print form number
                     print>>OUT, ("%-2s" % (j + 1,)),
@@ -459,6 +476,18 @@ def showforms():
                 else:
                     if field.attr.type == "submit":
                         print>>OUT, _trunc(field.attr.value, 40)
+                    elif field.attr.type == "radio":
+                        selector = "input[name=%s]:checked" % field.attr.name
+                        jsc = "console.log($('%s').val())" % selector
+                        selected_option = browser.run_javascript(jsc)
+
+                        radio_values = radio_fields[field.attr.name]
+
+                        value = "['%s'] of %s" % (selected_option,
+                                                  radio_values,)
+                        print>>OUT, _trunc(value, 40)
+
+                        del radio_fields[field.attr.name]
                     else:
                         # FIX: input names aren't necessarily unique
                         selector = "input[name=%s]" % field.attr.name
