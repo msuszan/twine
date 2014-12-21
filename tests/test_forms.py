@@ -81,6 +81,13 @@ class TestShowForms:
         formvalue('1', 'gender', 'female')
         showforms()
         assert '[\'female\'] of [\'male\', \'female\']' in self.output.getvalue()
+    def test_select_field_default(self):
+        showforms()
+        assert 'cpp' in self.output.getvalue()
+    def test_select_field(self):
+        formvalue('1', 'language', 'py')
+        showforms()
+        assert 'py' in self.output.getvalue()
     def test_textarea_field(self):
         formvalue('1', 'comments', 'examplecomment')
         showforms()
