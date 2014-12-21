@@ -85,3 +85,11 @@ class TestShowForms:
         formvalue('1', 'comments', 'examplecomment')
         showforms()
         assert 'examplecomment' in self.output.getvalue()
+    def test_checkbox_field_checked(self):
+        formvalue('1', 'accept_tos', 'true')
+        showforms()
+        assert 'checked' in self.output.getvalue()
+    def test_checkbox_field_unchecked(self):
+        formvalue('1', 'accept_tos', 'false')
+        showforms()
+        assert 'unchecked' in self.output.getvalue()
