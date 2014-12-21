@@ -60,7 +60,7 @@ class TestShowForms:
         set_output(None)
 
         reset_browser()
-    def test_showforms_basic(self):
+    def test_basic(self):
         showforms()
         assert 'name' in self.output.getvalue()
         assert 'password' in self.output.getvalue()
@@ -69,11 +69,19 @@ class TestShowForms:
         assert 'comments' in self.output.getvalue()
         assert 'accept_tos' in self.output.getvalue()
         assert 'submit' in self.output.getvalue()
-    def test_showforms_text_field(self):
+    def test_text_field(self):
         formvalue('1', 'name', 'examplename')
         showforms()
         assert 'examplename' in self.output.getvalue()
-    def test_showforms_password_field(self):
+    def test_password_field(self):
         formvalue('1', 'password', 'examplepassword')
         showforms()
         assert 'examplepassword' in self.output.getvalue()
+    def test_radio_field(self):
+        formvalue('1', 'gender', 'female')
+        showforms()
+        assert '[\'female\'] of [\'male\', \'female\']' in self.output.getvalue()
+    def test_textarea_field(self):
+        formvalue('1', 'comments', 'examplecomment')
+        showforms()
+        assert 'examplecomment' in self.output.getvalue()
